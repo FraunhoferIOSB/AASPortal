@@ -24,7 +24,7 @@
         "bcryptjs": "^2.4.3",
         "chalk": "^2.4.1",
         "cors": "^2.8.5",
-        "express": "^4.18.2",
+        "express": "^4.21.0",
         "form-data": "^4.0.0",
         "jimp": "^0.22.10",
         "jsonwebtoken": "^9.0.2",
