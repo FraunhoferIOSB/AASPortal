@@ -27,6 +27,9 @@ export class Variable {
     /** The user name of AASNode (default: aas-node) */
     public readonly AAS_NODE_USERNAME: string = process.env.AAS_NODE_USERNAME ?? 'aas-node';
 
+    /** The project email address. */
+    public readonly E_MAIL: string = process.env.ADMIN_E_MAIL ?? 'aasportal@iosb-ina.fraunhofer.de';
+
     /** The assets directory. */
     public readonly ASSETS: string = path.resolve(process.env.ASSETS ?? './assets');
 

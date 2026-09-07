@@ -9,6 +9,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { email, form, minLength, required, FormField, validate } from '@angular/forms/signals';
 import { TranslateDirective } from '@ngx-translate/core';
+import { finalize } from 'rxjs';
 
 import { NotifyService } from '../../notify/notify.service';
 import { AuthService } from '../auth.service';
@@ -33,6 +34,7 @@ export class RegisterForm {
     private readonly auth = inject(AuthService);
     private readonly notify = inject(NotifyService);
     private readonly model = signal<RegistrationData>({ id: '', name: '', password1: '', password2: '' });
+    private inProgress = false;
 
     public form = form(this.model, schemaPath => {
         required(schemaPath.id, { message: 'RegisterForm.EMAIL_REQUIRED' });
@@ -64,15 +66,23 @@ export class RegisterForm {
 
     public submit(event: Event): void {
         event.preventDefault();
+        if (this.inProgress || this.form().invalid()) {
+            return;
+        }
+
         const data = this.model();
-        this.auth.createAccount({ id: data.id, name: data.name, password: data.password1 }).subscribe({
-            next: () => {
-                this.window.location.href = '/auth/login';
-            },
-            error: error => {
-                this.notify.error(error);
-                this.form().reset({ id: '', name: '', password1: '', password2: '' });
-            },
-        });
+        this.inProgress = true;
+        this.auth
+            .createAccount({ id: data.id, name: data.name, password: data.password1 })
+            .pipe(finalize(() => (this.inProgress = false)))
+            .subscribe({
+                next: () => {
+                    this.window.location.href = '/auth/login';
+                },
+                error: error => {
+                    this.notify.error(error);
+                    this.form().reset({ id: '', name: '', password1: '', password2: '' });
+                },
+            });
     }
 }

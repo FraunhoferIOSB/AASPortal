@@ -55,9 +55,7 @@ describe('SqliteCookieStore', () => {
 
     it('should persist endpoint data through the cookie store API', async () => {
         const endpoints = [{ name: 'endpoint-1', headers: { authorization: 'Bearer token' } }];
-
         await store.updatesEndpoints('user-1', endpoints);
-
         await expect(store.getEndpoints('user-1')).resolves.toEqual(endpoints);
     });
 

@@ -10,6 +10,7 @@ import { Component, inject, signal } from '@angular/core';
 import { form, required, email, FormField } from '@angular/forms/signals';
 import { TranslateDirective } from '@ngx-translate/core';
 import { Router } from '@angular/router';
+import { finalize } from 'rxjs';
 import { Credentials } from 'aas-core';
 import { NotifyService } from '../../notify/notify.service';
 import { AuthService } from '../auth.service';
@@ -26,6 +27,7 @@ export class LoginForm {
     private readonly notify = inject(NotifyService);
     private readonly route = inject(Router);
     private readonly model = signal<Credentials>({ id: '', password: '' });
+    private inProgress = false;
 
     public readonly form = form(this.model, schemaPath => {
         required(schemaPath.id, { message: 'LoginForm.EMAIL_REQUIRED' });
@@ -39,19 +41,23 @@ export class LoginForm {
 
     public submit(event: Event): void {
         event.preventDefault();
-        if (this.form().invalid()) {
+        if (this.inProgress || this.form().invalid()) {
             return;
         }
 
         const credentials = this.model();
-        this.auth.login(credentials).subscribe({
-            next: () => {
-                this.route.navigateByUrl('/start');
-            },
-            error: error => {
-                this.notify.error(error);
-                this.form.password().reset('');
-            },
-        });
+        this.inProgress = true;
+        this.auth
+            .login(credentials)
+            .pipe(finalize(() => (this.inProgress = false)))
+            .subscribe({
+                next: () => {
+                    this.route.navigateByUrl('/start');
+                },
+                error: error => {
+                    this.notify.error(error);
+                    this.form.password().reset('');
+                },
+            });
     }
 }
