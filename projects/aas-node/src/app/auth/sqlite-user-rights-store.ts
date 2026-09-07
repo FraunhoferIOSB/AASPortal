@@ -42,6 +42,10 @@ export class SqliteUserRightsStore extends UserRightsStore {
         this.updateUserRightsSql = this.db.prepare('UPDATE userRights SET role = ? WHERE id = ?');
         this.deleteUserRightsSql = this.db.prepare('DELETE FROM userRights WHERE id = ?');
 
+        if (this.variable.E_MAIL) {
+            this.initDefaultAdmin(this.variable.E_MAIL);
+        }
+
         this.logger.info(`Using SQLite user rights store "${this.variable.USER_RIGHTS_STORE}".`);
     }
 
@@ -66,5 +70,13 @@ export class SqliteUserRightsStore extends UserRightsStore {
 
     public override async delete(userId: string): Promise<void> {
         this.deleteUserRightsSql.run(userId);
+    }
+
+    private async initDefaultAdmin(userId: string): Promise<void> {
+        const admin = this.getUserRightsSql.get(userId);
+        if (!admin) {
+            await this.add(userId, { role: 'admin' });
+            this.logger.info(`Default admin user "${userId}" created.`);
+        }
     }
 }

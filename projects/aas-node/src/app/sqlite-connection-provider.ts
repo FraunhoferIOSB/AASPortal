@@ -17,7 +17,7 @@ export class SqliteConnectionProvider implements Disposable {
     private readonly connections: Map<string, DatabaseSync> = new Map();
 
     public getConnection(url: string): DatabaseSync {
-        const file = path.isAbsolute(url) ? url : path.join(this.variable.CONTENT_ROOT, url);
+        const file = url === ':memory:' ? url : path.isAbsolute(url) ? url : path.join(this.variable.CONTENT_ROOT, url);
         let db = this.connections.get(file);
         if (!db) {
             db = new DatabaseSync(file, { timeout: 5000 });

@@ -6,7 +6,7 @@
  *
  *****************************************************************************/
 
-import { inject, singleton } from 'tsyringe';
+import { container, singleton } from 'tsyringe';
 import mongoose from 'mongoose';
 import { Logger, LOGGER, MongoDBConnectionProvider } from 'aas-package';
 
@@ -17,24 +17,27 @@ interface UserRightsDocument extends UserRights, mongoose.Document {}
 
 @singleton()
 export class MongoDBUserRightsStore extends UserRightsStore {
+    private readonly logger: Logger = container.resolve(LOGGER);
+    private readonly variable = container.resolve(Variable);
+    private readonly connectionProvider = container.resolve(MongoDBConnectionProvider);
     private readonly model: mongoose.Model<UserRightsDocument>;
     private readonly schema = new mongoose.Schema<UserRightsDocument>({
         id: { type: String, required: true, unique: true },
         role: { type: String, required: true },
     });
 
-    public constructor(
-        @inject(LOGGER) private readonly logger: Logger,
-        @inject(MongoDBConnectionProvider) connectionProvider: MongoDBConnectionProvider,
-        @inject(Variable) variable: Variable,
-    ) {
+    public constructor() {
         super();
 
-        this.model = connectionProvider
-            .getConnection(variable.USER_RIGHTS_STORE)
+        this.model = this.connectionProvider
+            .getConnection(this.variable.USER_RIGHTS_STORE)
             .model<UserRightsDocument>('UserRights', this.schema);
 
-        this.logger.info(`Using MongoDB user rights store ${variable.USER_RIGHTS_STORE}.`);
+        if (this.variable.E_MAIL) {
+            this.initDefaultAdmin(this.variable.E_MAIL);
+        }
+
+        this.logger.info(`Using MongoDB user rights store ${this.variable.USER_RIGHTS_STORE}.`);
     }
 
     public override async get(userId: string): Promise<UserRights> {
@@ -53,5 +56,13 @@ export class MongoDBUserRightsStore extends UserRightsStore {
 
     public override async delete(userId: string): Promise<void> {
         await this.model.deleteOne({ id: userId }).exec();
+    }
+
+    private async initDefaultAdmin(userId: string): Promise<void> {
+        const admin = await this.model.findOne({ id: userId }).exec();
+        if (!admin) {
+            await this.add(userId, { role: 'admin' });
+            this.logger.info(`Default admin user "${userId}" created.`);
+        }
     }
 }

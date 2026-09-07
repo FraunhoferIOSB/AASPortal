@@ -32,6 +32,7 @@ describe('SqliteUserRightsStore', () => {
 
         store = container.resolve(SqliteUserRightsStore);
     });
+
     it('should add, retrieve, update, and delete user rights', async () => {
         await store.add('user-1', { role: 'user' });
         expect(await store.get('user-1')).toEqual({ id: 'user-1', role: 'user' });
