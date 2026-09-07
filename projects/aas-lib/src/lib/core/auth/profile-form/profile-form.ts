@@ -12,7 +12,7 @@ import { TranslateDirective, TranslateService } from '@ngx-translate/core';
 import { form, FormField, readonly, validate } from '@angular/forms/signals';
 import { Router } from '@angular/router';
 import { ApplicationError, UserProfile } from 'aas-core';
-import { EMPTY, finalize, from, mergeMap, tap, throwError } from 'rxjs';
+import { EMPTY, finalize, from, mergeMap, throwError } from 'rxjs';
 
 import { AuthService } from '../auth.service';
 import { NotifyService } from '../../notify/notify.service';
@@ -162,22 +162,23 @@ export class ProfileForm {
         }
 
         this.inProgress = true;
-        this.auth.updateAccount(profile).pipe(
-            finalize(() => this.inProgress = false)
-        ).subscribe({
-            next: () => {
-                this.notify.info(this.translate.instant('ProfileForm.UPDATE_ACCOUNT_SUCCESS'));
-                this.form().reset({
-                    id: this.auth.user()?.id ?? '',
-                    name: this.auth.user()?.name ?? '',
-                    password: '',
-                    password1: '',
-                    password2: '',
-                });
-            },
-            error: error => {
-                this.notify.error(error);
-            },
-        });
+        this.auth
+            .updateAccount(profile)
+            .pipe(finalize(() => (this.inProgress = false)))
+            .subscribe({
+                next: () => {
+                    this.notify.info(this.translate.instant('ProfileForm.UPDATE_ACCOUNT_SUCCESS'));
+                    this.form().reset({
+                        id: this.auth.user()?.id ?? '',
+                        name: this.auth.user()?.name ?? '',
+                        password: '',
+                        password1: '',
+                        password2: '',
+                    });
+                },
+                error: error => {
+                    this.notify.error(error);
+                },
+            });
     }
 }

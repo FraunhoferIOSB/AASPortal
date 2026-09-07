@@ -10,11 +10,11 @@ import { Component, inject, signal } from '@angular/core';
 import { form, required, email, FormField } from '@angular/forms/signals';
 import { TranslateDirective } from '@ngx-translate/core';
 import { Router } from '@angular/router';
+import { finalize } from 'rxjs';
 import { Credentials } from 'aas-core';
 import { NotifyService } from '../../notify/notify.service';
 import { AuthService } from '../auth.service';
 import { FormError } from '../../../shared/components/form-error/form-error';
-import { finalize, tap } from 'rxjs';
 
 @Component({
     selector: 'fhg-login',
@@ -41,22 +41,23 @@ export class LoginForm {
 
     public submit(event: Event): void {
         event.preventDefault();
-        if (this.inProgress ||this.form().invalid()) {
+        if (this.inProgress || this.form().invalid()) {
             return;
         }
 
         const credentials = this.model();
         this.inProgress = true;
-        this.auth.login(credentials).pipe(
-            finalize(() => this.inProgress = false)
-        ).subscribe({
-            next: () => {
-                this.route.navigateByUrl('/start');
-            },
-            error: error => {
-                this.notify.error(error);
-                this.form.password().reset('');
-            },
-        });
+        this.auth
+            .login(credentials)
+            .pipe(finalize(() => (this.inProgress = false)))
+            .subscribe({
+                next: () => {
+                    this.route.navigateByUrl('/start');
+                },
+                error: error => {
+                    this.notify.error(error);
+                    this.form.password().reset('');
+                },
+            });
     }
 }

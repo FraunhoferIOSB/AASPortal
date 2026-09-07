@@ -9,12 +9,12 @@
 import { Component, inject, signal } from '@angular/core';
 import { email, form, minLength, required, FormField, validate } from '@angular/forms/signals';
 import { TranslateDirective } from '@ngx-translate/core';
+import { finalize } from 'rxjs';
 
 import { NotifyService } from '../../notify/notify.service';
 import { AuthService } from '../auth.service';
 import { WINDOW } from '../../../shared/services/window.service';
 import { FormError } from '../../../shared/components/form-error/form-error';
-import { finalize, tap } from 'rxjs';
 
 export interface RegistrationData {
     id: string;
@@ -72,16 +72,17 @@ export class RegisterForm {
 
         const data = this.model();
         this.inProgress = true;
-        this.auth.createAccount({ id: data.id, name: data.name, password: data.password1 }).pipe(
-            finalize(() => this.inProgress = false)
-        ).subscribe({
-            next: () => {
-                this.window.location.href = '/auth/login';
-            },
-            error: error => {
-                this.notify.error(error);
-                this.form().reset({ id: '', name: '', password1: '', password2: '' });
-            },
-        });
+        this.auth
+            .createAccount({ id: data.id, name: data.name, password: data.password1 })
+            .pipe(finalize(() => (this.inProgress = false)))
+            .subscribe({
+                next: () => {
+                    this.window.location.href = '/auth/login';
+                },
+                error: error => {
+                    this.notify.error(error);
+                    this.form().reset({ id: '', name: '', password1: '', password2: '' });
+                },
+            });
     }
 }
