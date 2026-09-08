@@ -12,6 +12,7 @@ import { Logger, LOGGER, MongoDBConnectionProvider } from 'aas-package';
 
 import { Rights, UserRights, UserRightsStore } from './user-rights-store.js';
 import { Variable } from '../variable.js';
+import { AASEndpointAuth, UserRole } from 'aas-core';
 
 interface UserRightsDocument extends UserRights, mongoose.Document {}
 
@@ -24,6 +25,7 @@ export class MongoDBUserRightsStore extends UserRightsStore {
     private readonly schema = new mongoose.Schema<UserRightsDocument>({
         id: { type: String, required: true, unique: true },
         role: { type: String, required: true },
+        endpoints: [{ type: Object, required: true }],
     });
 
     public constructor() {
@@ -33,15 +35,25 @@ export class MongoDBUserRightsStore extends UserRightsStore {
             .getConnection(this.variable.USER_RIGHTS_STORE)
             .model<UserRightsDocument>('UserRights', this.schema);
 
-        if (this.variable.E_MAIL) {
-            this.initDefaultAdmin(this.variable.E_MAIL);
-        }
-
         this.logger.info(`Using MongoDB user rights store ${this.variable.USER_RIGHTS_STORE}.`);
     }
 
-    public override async get(userId: string): Promise<UserRights> {
-        return (await this.model.findOne({ id: userId }).exec()) ?? { id: userId, role: 'user' };
+    public override async getRole(userId: string): Promise<UserRole> {
+        const value = await this.model.findOne({ id: userId }).exec();
+        if (!value) {
+            return 'user';
+        }
+
+        return value.role;
+    }
+
+    public override async getEndpoints(userId: string): Promise<AASEndpointAuth[]> {
+        const value = await this.model.findOne({ id: userId }).exec();
+        if (!value) {
+            return [];
+        }
+
+        return value.endpoints;
     }
 
     public override async add(userId: string, rights: Rights): Promise<void> {
@@ -52,17 +64,13 @@ export class MongoDBUserRightsStore extends UserRightsStore {
         if (rights.role !== undefined) {
             await this.model.updateOne({ id: userId }, { role: rights.role }).exec();
         }
+
+        if (rights.endpoints !== undefined) {
+            await this.model.updateOne({ id: userId }, { endpoints: rights.endpoints }).exec();
+        }
     }
 
     public override async delete(userId: string): Promise<void> {
         await this.model.deleteOne({ id: userId }).exec();
-    }
-
-    private async initDefaultAdmin(userId: string): Promise<void> {
-        const admin = await this.model.findOne({ id: userId }).exec();
-        if (!admin) {
-            await this.add(userId, { role: 'admin' });
-            this.logger.info(`Default admin user "${userId}" created.`);
-        }
     }
 }

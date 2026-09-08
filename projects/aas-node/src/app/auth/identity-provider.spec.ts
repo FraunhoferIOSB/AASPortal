@@ -65,7 +65,7 @@ describe('IdentityProvider', () => {
             SESSION_TTL: 86400,
         });
 
-        cookies = createSpyObj<CookieStore>(['getCookie', 'setCookie', 'getEndpoints', 'updatesEndpoints']);
+        cookies = createSpyObj<CookieStore>(['getCookie', 'setCookie']);
 
         container.clearInstances();
         container.registerInstance(Variable, variable);
@@ -74,7 +74,7 @@ describe('IdentityProvider', () => {
         container.registerInstance(USER_STORE, createSpyObj<UserStore>(['get', 'set', 'delete']));
         container.registerInstance(
             USER_RIGHTS_STORE,
-            createSpyObj<UserRightsStore>(['get', 'add', 'update', 'delete']),
+            createSpyObj<UserRightsStore>(['getRole', 'getEndpoints', 'add', 'update', 'delete']),
         );
 
         container.registerSingleton(IdentityProvider);
@@ -135,7 +135,7 @@ describe('IdentityProvider', () => {
             });
 
             userStore.get.mockResolvedValue(await createUserData());
-            userRightsStore.get.mockResolvedValue({ id: 'john.doe@email.com', role: 'user' });
+            userRightsStore.getRole.mockResolvedValue('user');
             const res = createSpyObj<express.Response>(['cookie', 'json', 'redirect', 'status', 'sendStatus']);
             identityProvider['isValidCodeChallenge'] = vi.fn().mockReturnValue(true);
             await identityProvider.callback(req, res);
@@ -321,7 +321,7 @@ describe('IdentityProvider', () => {
                 .fn()
                 .mockResolvedValue({ id: 'john.doe@email.com', name: 'John Doe' });
 
-            cookies.getEndpoints.mockResolvedValue([]);
+            userRightsStore.getEndpoints.mockResolvedValue([]);
 
             const next = vi.fn();
             const middleware = identityProvider.middleware();
@@ -450,7 +450,7 @@ describe('IdentityProvider', () => {
 
             userStore.get.mockResolvedValue(await createUserData());
 
-            userRightsStore.get.mockResolvedValue({ id: 'john.doe@email.com', role: 'user' });
+            userRightsStore.getRole.mockResolvedValue('user');
 
             const res = createSpyObj<express.Response>(['json', 'status']);
             res.status.mockReturnThis();

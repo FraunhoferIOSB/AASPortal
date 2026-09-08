@@ -77,8 +77,6 @@
                     [placeholder]="'Shells.PLACEHOLDER_FILTER' | translate"
                     [ngModel]="filterText()"
                     (ngModelChange)="setFilterText($event)"
-                    [ngModelOptions]="{ updateOn: 'blur' }"
-                    (keydown.enter)="textInput.blur()"
                     (search)="setFilterText('')"
                 />
             </div>

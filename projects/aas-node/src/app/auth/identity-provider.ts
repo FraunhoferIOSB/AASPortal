@@ -26,14 +26,12 @@ import {
 import { IdentityProviderClient, RefreshTokenResponse } from './identity-provider-client.js';
 import { ERRORS } from '../errors.js';
 import { USER_STORE, UserData } from './user-store.js';
-import { USER_RIGHTS_STORE } from './user-rights-store.js';
 
 const AAS_NODE_SESSION = 'AAS_NODE_SESSION';
 const ACCESS_TOKEN_EXPIRES_IN = 5 * 60; // 5 minutes
 
 @singleton()
 export class IdentityProvider extends IdentityProviderClient {
-    private readonly userRights = container.resolve(USER_RIGHTS_STORE);
     private readonly userStore = container.resolve(USER_STORE);
     private readonly algorithm: jwt.Algorithm;
 
@@ -108,7 +106,7 @@ export class IdentityProvider extends IdentityProviderClient {
         const check_session_iframe = `${this.variable.HOST_URL ?? `${req.protocol}://${req.host}`}/auth/login_status_iframe.html`;
         req.session.user_id = user.id;
         req.session.name = user.name;
-        req.session.role = (await this.userRights.get(data.id)).role;
+        req.session.role = await this.userRights.getRole(data.id);
         req.session.access_token = this.createAccessToken(user);
         req.session.refresh_token = this.createRefreshToken(user);
         req.session.session_state = session_state;
@@ -342,7 +340,7 @@ export class IdentityProvider extends IdentityProviderClient {
         return res.status(201).json({
             id: data.id,
             name: data.name,
-            role: (await this.userRights.get(data.id)).role,
+            role: await this.userRights.getRole(data.id),
             client_id: this.variable.CLIENT_ID,
             session_state: req.session.session_state,
             check_session_iframe: req.session.check_session_iframe,

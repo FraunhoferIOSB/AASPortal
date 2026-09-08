@@ -12,9 +12,9 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 import { User, noop } from 'aas-core';
 import { LOGGER } from 'aas-package';
-import { COOKIE_STORE } from '../cookie-storage/cookie-store.js';
 import { ERRORS } from '../errors.js';
 import { Variable } from '../variable.js';
+import { USER_RIGHTS_STORE } from './user-rights-store.js';
 
 /** Injection token. */
 export const IDENTITY_PROVIDER: InjectionToken<IdentityProviderClient> = Symbol('IDENTITY_PROVIDER');
@@ -28,7 +28,7 @@ export interface RefreshTokenResponse {
 /** Defines an identifier provider client. */
 export abstract class IdentityProviderClient {
     protected readonly logger = container.resolve(LOGGER);
-    protected readonly cookies = container.resolve(COOKIE_STORE);
+    protected readonly userRights = container.resolve(USER_RIGHTS_STORE);
     protected readonly variable = container.resolve(Variable);
     protected readonly clientId = this.variable.CLIENT_ID;
 
@@ -120,7 +120,7 @@ export abstract class IdentityProviderClient {
                         }
 
                         if (!endpoints) {
-                            endpoints = await this.cookies.getEndpoints(userId);
+                            endpoints = await this.userRights.getEndpoints(userId);
                             req.session.endpoints = endpoints;
                         }
                     }

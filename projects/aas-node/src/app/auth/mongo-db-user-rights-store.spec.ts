@@ -15,6 +15,7 @@ import { LOGGER, Logger, MongoDBConnectionProvider } from 'aas-package';
 import { MongoDBUserRightsStore } from './mongo-db-user-rights-store.js';
 import { createSpyObj } from '../../test/mocks.js';
 import { Variable } from '../variable.js';
+import { UserRights } from './user-rights-store.js';
 
 vi.mock(
     import('mongoose'),
@@ -62,6 +63,7 @@ describe('MongoDBUserRightsStore', () => {
             Variable,
             createSpyObj<Variable>([], { USER_RIGHTS_STORE: 'mongodb://localhost:27017/users' }),
         );
+
         store = container.resolve(MongoDBUserRightsStore);
     });
 
@@ -69,20 +71,20 @@ describe('MongoDBUserRightsStore', () => {
         vitest.restoreAllMocks();
     });
 
-    it('returns viewer rights when no persisted rights exist', async () => {
+    it('returns "user" rights when no persisted rights exist', async () => {
         findOneMock.mockReturnValue({ exec: vi.fn().mockResolvedValue(null) });
-
-        await expect(store.get('missing@example.com')).resolves.toEqual({ id: 'missing@example.com', role: 'user' });
+        await expect(store.getRole('missing@example.com')).resolves.toEqual('user');
     });
 
     it('adds, retrieves, updates, and deletes user rights', async () => {
-        const userRights = { id: 'user@example.com', role: 'user' as const };
+        const userRights: UserRights = { id: 'user@example.com', role: 'user', endpoints: [] };
+
         findOneMock.mockReturnValue({ exec: vi.fn().mockResolvedValue(userRights) });
         updateOneMock.mockReturnValue({ exec: vi.fn().mockResolvedValue({}) });
         deleteOneMock.mockReturnValue({ exec: vi.fn().mockResolvedValue({}) });
 
-        await store.add(userRights.id, { role: userRights.role });
-        await expect(store.get(userRights.id)).resolves.toBe(userRights);
+        await store.add(userRights.id, { role: userRights.role, endpoints: [] });
+        await expect(store.getRole(userRights.id)).resolves.toBe('user');
         await store.update(userRights.id, { role: 'admin' });
         await store.delete(userRights.id);
 
@@ -90,6 +92,25 @@ describe('MongoDBUserRightsStore', () => {
         expect(saveMock).toHaveBeenCalledOnce();
         expect(updateOneMock).toHaveBeenCalledWith({ id: userRights.id }, { role: 'admin' });
         expect(deleteOneMock).toHaveBeenCalledWith({ id: userRights.id });
+    });
+
+    it('should add, retrieve, update user specific AAS Endpoint authentication', async () => {
+        const userRights: UserRights = { id: 'user@example.com', role: 'user', endpoints: [] };
+
+        findOneMock.mockReturnValue({ exec: vi.fn().mockResolvedValue(userRights) });
+        updateOneMock.mockReturnValue({ exec: vi.fn().mockResolvedValue({}) });
+        deleteOneMock.mockReturnValue({ exec: vi.fn().mockResolvedValue({}) });
+
+        await store.add(userRights.id, { role: userRights.role, endpoints: [] });
+        await expect(store.getRole(userRights.id)).resolves.toBe('user');
+        await store.update(userRights.id, { endpoints: [{ name: 'Endpoint 1', headers: { header: 'value' } }] });
+
+        expect(userRightsModelMock).toHaveBeenCalledWith(userRights);
+        expect(saveMock).toHaveBeenCalledOnce();
+        expect(updateOneMock).toHaveBeenCalledWith(
+            { id: userRights.id },
+            { endpoints: [{ name: 'Endpoint 1', headers: { header: 'value' } }] },
+        );
     });
 
     it('does not update when the role is omitted', async () => {

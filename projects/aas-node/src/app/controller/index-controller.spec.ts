@@ -20,26 +20,22 @@ import { Authentication } from './authentication.js';
 import { errorHandler } from '../../test/assets/error-handler.js';
 import { AAS_INDEX, AASIndex } from '../index/aas-index.js';
 import { EndpointProvider } from '../provider/endpoint-provider.js';
-import { COOKIE_STORE, CookieStore } from '../cookie-storage/cookie-store.js';
 
 describe('IndexController', () => {
     let app: Express;
     let provider: Mocked<EndpointProvider>;
     let authentication: Mocked<Authentication>;
     let index: Mocked<AASIndex>;
-    let cookieStorage: Mocked<CookieStore>;
 
     beforeEach(() => {
         provider = createSpyObj<EndpointProvider>(['clearIndex']);
         index = createSpyObj<AASIndex>(['getEndpoints', 'getEndpointCount', 'getCount']);
         authentication = createSpyObj<Authentication>(['authentication']);
         authentication.authentication.mockResolvedValue({ id: 'john.doe@email.com', name: 'John Doe' });
-        cookieStorage = createSpyObj<CookieStore>(['getEndpoints', 'updatesEndpoints']);
 
         container.registerInstance(EndpointProvider, provider);
         container.registerInstance(Authentication, authentication);
         container.registerInstance(AAS_INDEX, index);
-        container.registerInstance(COOKIE_STORE, cookieStorage);
 
         app = express();
         app.use(json());

@@ -47,8 +47,8 @@ describe('OidcClient', () => {
             userinfo_endpoint: 'https://example.com/userinfo',
         });
 
-        cookies = createSpyObj<CookieStore>(['getCookie', 'setCookie', 'getEndpoints']);
-        userRights = createSpyObj<UserRightsStore>(['get', 'add', 'update', 'delete']);
+        cookies = createSpyObj<CookieStore>(['getCookie', 'setCookie']);
+        userRights = createSpyObj<UserRightsStore>(['getRole', 'getEndpoints', 'add', 'update', 'delete']);
         container.clearInstances();
         container.registerInstance(LOGGER, logger);
         container.registerInstance(COOKIE_STORE, cookies);
@@ -164,7 +164,7 @@ describe('OidcClient', () => {
                 name: 'John Doe',
             });
 
-            userRights.get.mockResolvedValue({ role: 'user', id: 'john.doe@email.com' });
+            userRights.getRole.mockResolvedValue('user');
 
             await identityProvider.callback(req, res);
             expect(req.session.state).toBeUndefined();

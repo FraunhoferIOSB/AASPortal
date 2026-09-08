@@ -7,12 +7,13 @@
  *****************************************************************************/
 
 import { InjectionToken } from 'tsyringe';
-import { UserRole } from 'aas-core';
+import { AASEndpointAuth, UserRole } from 'aas-core';
 
 export const USER_RIGHTS_STORE: InjectionToken<UserRightsStore> = Symbol('USER_RIGHTS_STORE');
 
 export interface Rights {
     role: UserRole;
+    endpoints: AASEndpointAuth[];
 }
 
 export interface UserRights extends Rights {
@@ -20,7 +21,9 @@ export interface UserRights extends Rights {
 }
 
 export abstract class UserRightsStore {
-    public abstract get(userId: string): Promise<UserRights>;
+    public abstract getRole(userId: string): Promise<UserRole>;
+
+    public abstract getEndpoints(userId: string): Promise<AASEndpointAuth[]>;
 
     public abstract add(userId: string, rights: Rights): Promise<void>;
 

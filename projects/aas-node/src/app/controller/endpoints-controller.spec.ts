@@ -20,15 +20,15 @@ import { RegisterRoutes } from '../routes/routes.js';
 import { Authentication } from './authentication.js';
 import { errorHandler } from '../../test/assets/error-handler.js';
 import { EndpointProvider } from '../provider/endpoint-provider.js';
-import { COOKIE_STORE, CookieStore } from '../cookie-storage/cookie-store.js';
 import { AASIndexClient } from '../index/aas-index-client.js';
+import { USER_RIGHTS_STORE, UserRightsStore } from '../auth/user-rights-store.js';
 
 describe('EndpointsController', () => {
     let app: Express;
     let provider: Mocked<EndpointProvider>;
     let authentication: Mocked<Authentication>;
     let index: Mocked<AASIndexClient>;
-    let cookieStorage: Mocked<CookieStore>;
+    let userRightsStore: Mocked<UserRightsStore>;
 
     beforeEach(() => {
         provider = createSpyObj<EndpointProvider>([
@@ -43,12 +43,12 @@ describe('EndpointsController', () => {
         index = createSpyObj<AASIndexClient>(['getEndpoints', 'getEndpointCount', 'getDocumentCount']);
         authentication = createSpyObj<Authentication>(['authentication']);
         authentication.authentication.mockResolvedValue({ id: 'john.doe@email.com', name: 'John Doe' });
-        cookieStorage = createSpyObj<CookieStore>(['getEndpoints', 'updatesEndpoints']);
+        userRightsStore = createSpyObj<UserRightsStore>(['getEndpoints', 'update']);
 
         container.registerInstance(EndpointProvider, provider);
         container.registerInstance(Authentication, authentication);
         container.registerInstance(AASIndexClient, index);
-        container.registerInstance(COOKIE_STORE, cookieStorage);
+        container.registerInstance(USER_RIGHTS_STORE, userRightsStore);
 
         app = express();
         app.use(json());
@@ -154,7 +154,7 @@ describe('EndpointsController', () => {
             headers: { key: 'value' },
         };
 
-        cookieStorage.getEndpoints.mockResolvedValue([endpointAuth]);
+        userRightsStore.getEndpoints.mockResolvedValue([endpointAuth]);
         const response = await request(app).get('/api/v1/endpoints/auth');
         expect(response.statusCode).toBe(200);
         expect(response.body).toEqual([
@@ -164,7 +164,7 @@ describe('EndpointsController', () => {
             },
         ]);
 
-        expect(cookieStorage.getEndpoints).toHaveBeenCalledWith('john.doe@email.com');
+        expect(userRightsStore.getEndpoints).toHaveBeenCalledWith('john.doe@email.com');
     });
 
     it('PATCH: /api/v1/endpoints/auth', async () => {
@@ -173,10 +173,10 @@ describe('EndpointsController', () => {
             headers: { key: '*****' },
         };
 
-        cookieStorage.updatesEndpoints.mockResolvedValue();
+        userRightsStore.update.mockResolvedValue();
         const response = await request(app).patch('/api/v1/endpoints/auth').send([endpointAuth]);
         expect(response.statusCode).toBe(204);
-        expect(cookieStorage.updatesEndpoints).toHaveBeenCalledWith('john.doe@email.com', [endpointAuth]);
+        expect(userRightsStore.update).toHaveBeenCalledWith('john.doe@email.com', { endpoints: [endpointAuth] });
     });
 
     it('GET: /api/v1/endpoints/{name}/status', async () => {
