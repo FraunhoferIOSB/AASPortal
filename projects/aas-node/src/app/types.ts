@@ -25,8 +25,6 @@ declare module 'express-session' {
         expires_at: number;
         code_verifier: string;
         endpoints: AASEndpointAuth[];
-        session_state: string;
-        check_session_iframe: string;
         state: string;
     }
 }

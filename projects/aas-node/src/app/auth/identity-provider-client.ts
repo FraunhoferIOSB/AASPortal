@@ -60,13 +60,6 @@ export abstract class IdentityProviderClient {
     public abstract callback(req: express.Request, res: express.Response): Promise<express.Response | void>;
 
     /**
-     *
-     * @param req The request.
-     * @param res The response.
-     */
-    public abstract checkSession(req: express.Request, res: express.Response): Promise<express.Response | void>;
-
-    /**
      * The logout method for the identity provider. This method is called when a user tries to log out.
      * @param req The request.
      * @param res The response.
@@ -130,8 +123,6 @@ export abstract class IdentityProviderClient {
                         name: req.session.name!,
                         role: req.session.role!,
                         client_id: this.clientId,
-                        session_state: req.session.session_state,
-                        check_session_iframe: req.session.check_session_iframe,
                     };
                 } catch (error) {
                     if (error.name !== 'TokenExpiredError' || !refresh_token) {
@@ -148,8 +139,6 @@ export abstract class IdentityProviderClient {
                             ...tokenData.user,
                             role: req.session.role!,
                             client_id: this.clientId,
-                            session_state: req.session.session_state,
-                            check_session_iframe: req.session.check_session_iframe,
                         };
                     } catch (error) {
                         noop(error);
@@ -167,8 +156,6 @@ export abstract class IdentityProviderClient {
                         ...tokenData.user,
                         role: req.session.role!,
                         client_id: this.clientId,
-                        session_state: req.session.session_state,
-                        check_session_iframe: req.session.check_session_iframe,
                     };
                 } catch (error) {
                     noop(error);

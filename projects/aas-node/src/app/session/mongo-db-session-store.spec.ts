@@ -102,8 +102,6 @@ describe('MongoDbSessionStore', () => {
                 access_token: 'access_token',
                 refresh_token: 'refresh_token',
                 expires_at: 1234567890,
-                session_state: 'session_state',
-                check_session_iframe: 'check_session_iframe',
                 name: 'John Doe',
                 role: 'user',
             };
@@ -162,8 +160,6 @@ describe('MongoDbSessionStore', () => {
                 access_token: 'access_token',
                 refresh_token: 'refresh_token',
                 expires_at: 1234567890,
-                session_state: 'session_state',
-                check_session_iframe: 'check_session_iframe',
             };
 
             const query = createSpyObj<mongoose.Query<SessionDataDocument | null, SessionDataDocument>>(['exec'], {});
@@ -206,8 +202,6 @@ describe('MongoDbSessionStore', () => {
                 access_token: 'access_token',
                 refresh_token: 'refresh_token',
                 expires_at: 1234567890,
-                session_state: 'session_state',
-                check_session_iframe: 'check_session_iframe',
             };
 
             const existingSessionData: SessionData = {
@@ -227,8 +221,6 @@ describe('MongoDbSessionStore', () => {
                 access_token: 'old-access_token',
                 refresh_token: 'old-refresh_token',
                 expires_at: 9876543210,
-                session_state: 'old-session_state',
-                check_session_iframe: 'old-check_session_iframe',
             };
 
             const existingDoc = createSpyObj<SessionDataDocument>(['save'], {
@@ -275,8 +267,6 @@ describe('MongoDbSessionStore', () => {
                 access_token: 'access_token',
                 refresh_token: 'refresh_token',
                 expires_at: 1234567890,
-                session_state: 'session_state',
-                check_session_iframe: 'check_session_iframe',
             };
 
             const query = createSpyObj<mongoose.Query<SessionDataDocument | null, SessionDataDocument>>(['exec'], {});
@@ -361,8 +351,6 @@ describe('MongoDbSessionStore', () => {
                     access_token: 'access_token-1',
                     refresh_token: 'refresh_token-1',
                     expires_at: 1234567890,
-                    session_state: 'session_state-1',
-                    check_session_iframe: 'check_session_iframe-1',
                 },
             });
 
@@ -385,8 +373,6 @@ describe('MongoDbSessionStore', () => {
                     access_token: 'access_token-2',
                     refresh_token: 'refresh_token-2',
                     expires_at: 9876543210,
-                    session_state: 'session_state-2',
-                    check_session_iframe: 'check_session_iframe-2',
                 },
             });
 

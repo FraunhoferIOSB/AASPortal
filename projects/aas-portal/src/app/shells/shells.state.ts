@@ -6,18 +6,7 @@
  *
  *****************************************************************************/
 
-import {
-    computed,
-    debounced,
-    DebouncedOptions,
-    inject,
-    Injectable,
-    linkedSignal,
-    Resource,
-    ResourceSnapshot,
-    signal,
-    untracked,
-} from '@angular/core';
+import { computed, debounced, inject, Injectable, linkedSignal, signal, untracked } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { httpResource } from '@angular/common/http';

@@ -125,7 +125,7 @@ describe('OidcClient', () => {
                 protocol: 'https',
                 host: 'localhost',
                 session,
-                query: { code: 'test-code', state: 'test-state', session_state: 'test-session-state' },
+                query: { code: 'test-code', state: 'test-state' },
             });
 
             const configurationResponse = createSpyObj<Response>(['json'], {

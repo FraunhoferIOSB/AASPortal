@@ -96,7 +96,6 @@ export class OidcClient extends IdentityProviderClient {
             const token_endpoint = configuration.token_endpoint;
             const redirect_uri = this.variable.REDIRECT_URI ?? `${req.protocol}://${req.host}/auth/callback`;
             const code = String(req.query.code);
-            const session_state = String(req.query.session_state);
             const code_verifier = String(req.session.code_verifier);
             const state = req.session.state;
             delete req.session.code_verifier;
@@ -135,11 +134,6 @@ export class OidcClient extends IdentityProviderClient {
                 } satisfies ErrorData);
             }
 
-            if (session_state && configuration.check_session_iframe) {
-                req.session.session_state = session_state;
-                req.session.check_session_iframe = configuration.check_session_iframe;
-            }
-
             const tokenData = (await response.json()) as TokenEndpointResponse;
             const { id, name } = this.decodeAccessToken(tokenData.access_token);
             req.session.user_id = id;
@@ -151,10 +145,6 @@ export class OidcClient extends IdentityProviderClient {
         } catch (error) {
             return this.sendError(res, error);
         }
-    }
-
-    public override async checkSession(req: express.Request, res: express.Response): Promise<express.Response | void> {
-        return res.sendStatus(501);
     }
 
     public override async logout(req: express.Request, res: express.Response): Promise<express.Response> {

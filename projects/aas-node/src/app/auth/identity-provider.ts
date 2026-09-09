@@ -10,7 +10,6 @@ import { container, singleton } from 'tsyringe';
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { nanoid } from 'nanoid';
 import { createHash, randomBytes } from 'crypto';
 import {
     isCredentials,
@@ -95,141 +94,18 @@ export class IdentityProvider extends IdentityProviderClient {
         }
 
         const user: User = { id: data.id, name: data.name };
-        const redirect_uri = this.variable.REDIRECT_URI ?? `${req.protocol}://${req.host}/auth/callback`;
-        const op_session_id = nanoid();
-        const session_state = this.generateSessionState(
-            this.variable.CLIENT_ID,
-            new URL(redirect_uri).origin,
-            op_session_id,
-        );
-
-        const check_session_iframe = `${this.variable.HOST_URL ?? `${req.protocol}://${req.host}`}/auth/login_status_iframe.html`;
         req.session.user_id = user.id;
         req.session.name = user.name;
         req.session.role = await this.userRights.getRole(data.id);
         req.session.access_token = this.createAccessToken(user);
         req.session.refresh_token = this.createRefreshToken(user);
-        req.session.session_state = session_state;
-        req.session.check_session_iframe = check_session_iframe;
-
-        res.cookie(AAS_NODE_SESSION, op_session_id, {
-            httpOnly: false,
-            secure: true,
-            sameSite: 'none',
-            expires: new Date(Date.now() + this.variable.SESSION_TTL * 1000),
-            path: '/',
-        });
 
         res.json({
             client_id: this.variable.CLIENT_ID,
             id: req.session.user_id,
             name: req.session.name,
             role: req.session.role,
-            session_state,
-            check_session_iframe,
         } satisfies SessionUser);
-    }
-
-    public override async checkSession(req: express.Request, res: express.Response): Promise<express.Response | void> {
-        const user = req.user;
-        if (!user) {
-            return res.status(401).json({
-                message: ERRORS.UNAUTHENTICATED_ACCESS,
-                name: 'ApplicationError',
-                status: 401,
-            } satisfies ErrorData);
-        }
-
-        const clientId = this.toScriptLiteral(this.variable.CLIENT_ID);
-        const sessionState = this.toScriptLiteral(req.session.session_state);
-        const html = `
-<!doctype html>
-<html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>Check Session State</title>
-    </head>
-    <body>
-        <script>
-            const clientId = ${clientId};
-            const sessionState = ${sessionState};
-            const opCookieName = '${AAS_NODE_SESSION}';
-
-            window.addEventListener(
-                'message',
-                async e => {
-                    const clientOrigin = e.origin;
-                    const expectedMessage = clientId + ' ' + sessionState;
-                    if (e.data !== expectedMessage) {
-                        return;
-                    }
-
-                    const status = await checkAccess(clientOrigin); 
-                    e.source?.postMessage(status, clientOrigin);
-                },
-                false,
-            );
-
-            async function checkAccess(clientOrigin) {
-                if (!(await hasStorageAccess())) {
-                    return 'error';
-                }
-                
-                const opSessionId = getCookie(opCookieName);
-                if (!opSessionId) {
-                    return 'changed';
-                }
-
-                const salt = sessionState.split('.')[1] || '';
-                const hashInput = clientId + ' ' + clientOrigin + ' ' + opSessionId + ' ' + salt;
-                const encoder = new TextEncoder();
-                const data = encoder.encode(hashInput);
-                const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-                const hashArray = Array.from(new Uint8Array(hashBuffer));
-                const hashBase64 = btoa(String.fromCharCode.apply(null, hashArray));
-                const calculatedState =
-                    hashBase64
-                        .replace(/=/g, '')
-                        .replace(/\\+/g, '-')
-                        .replace(/\\//g, '_') +
-                    '.' +
-                    salt;
-
-                return calculatedState === sessionState ? 'unchanged' : 'changed';
-            }
-            
-            async function hasStorageAccess() {
-                if (!("hasStorageAccess" in document)) {
-                    return true;
-                }
-
-                if (await document.hasStorageAccess()) {
-                    return true;
-                }
-
-                try {
-                    await document.requestStorageAccess();
-                    return true;
-                } catch (error) {
-                    return false;
-                }
-            }
-
-            function getCookie(name) {
-                const value = '; ' + document.cookie;
-                const parts = value.split('; ' + name + '=');
-                if (parts.length === 2) {
-                    return parts.pop().split(';').shift();
-                }
-            }
-        </script>
-    </body>
-</html>
-    `;
-
-        res.setHeader('Content-Type', 'text/html');
-        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
-        return res.status(200).send(html);
     }
 
     public override async logout(req: express.Request, res: express.Response): Promise<express.Response> {
@@ -342,8 +218,6 @@ export class IdentityProvider extends IdentityProviderClient {
             name: data.name,
             role: await this.userRights.getRole(data.id),
             client_id: this.variable.CLIENT_ID,
-            session_state: req.session.session_state,
-            check_session_iframe: req.session.check_session_iframe,
         } satisfies SessionUser);
     }
 

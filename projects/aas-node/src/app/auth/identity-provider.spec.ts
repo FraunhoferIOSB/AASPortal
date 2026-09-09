@@ -252,44 +252,6 @@ describe('IdentityProvider', () => {
         });
     });
 
-    describe('checkSession', () => {
-        it('should return 401 if user is not logged in', async () => {
-            const req = createSpyObj<express.Request>([], { session: createSessionMock(), user: undefined });
-            const res = createSpyObj<express.Response>(['json', 'status']);
-            res.status.mockReturnThis();
-
-            await identityProvider.checkSession(req, res);
-
-            expect(res.status).toHaveBeenCalledWith(401);
-        });
-
-        it('should safely serialize values embedded in the session iframe', async () => {
-            Object.assign(variable, { CLIENT_ID: `client'</script><script>alert(1)</script>` });
-            const req = createSpyObj<express.Request>([], {
-                session: createSessionMock({ session_state: `state'</script><script>alert(1)</script>` }),
-                user: {
-                    id: 'john.doe@email.com',
-                    name: 'John Doe',
-                    role: 'user',
-                    client_id: `client'</script><script>alert(1)</script>`,
-                },
-            });
-            const res = createSpyObj<express.Response>(['send', 'setHeader', 'status']);
-            res.status.mockReturnThis();
-
-            await identityProvider.checkSession(req, res);
-
-            expect(res.setHeader).toHaveBeenCalledWith('Content-Type', 'text/html');
-            expect(res.setHeader).toHaveBeenCalledWith(
-                'Cache-Control',
-                'no-store, no-cache, must-revalidate, max-age=0',
-            );
-            expect(res.status).toHaveBeenCalledWith(200);
-            expect(res.send).toHaveBeenCalledWith(expect.not.stringContaining('</script><script>alert(1)</script>'));
-            expect(res.send).toHaveBeenCalledWith(expect.stringContaining('\\u003c/script\\u003e'));
-        });
-    });
-
     describe('logout', () => {
         it('should logout a user', async () => {
             const session = createSessionMock();
@@ -343,8 +305,6 @@ describe('IdentityProvider', () => {
             session.user_id = 'john.doe@email.com';
             session.name = 'John Doe';
             session.role = 'user';
-            session.session_state = 'test-session-state';
-            session.check_session_iframe = 'test-check-session-iframe';
             const req = createSpyObj<express.Request>([], {
                 session,
                 user: { id: 'john.doe@email.com', name: 'John Doe', role: 'user', client_id: 'test-client-id' },
@@ -368,8 +328,6 @@ describe('IdentityProvider', () => {
                 name: 'John Doe',
                 role: 'user',
                 client_id: 'test-client-id',
-                session_state: 'test-session-state',
-                check_session_iframe: 'test-check-session-iframe',
             } as SessionUser);
 
             expect(next).toHaveBeenCalled();
@@ -382,8 +340,6 @@ describe('IdentityProvider', () => {
             session.user_id = 'john.doe@email.com';
             session.name = 'John Doe';
             session.role = 'user';
-            session.session_state = 'test-session-state';
-            session.check_session_iframe = 'test-check-session-iframe';
             const req = createSpyObj<express.Request>([], {
                 session,
                 user: { id: 'john.doe@email.com', name: 'John Doe', role: 'user', client_id: 'test-client-id' },
@@ -406,8 +362,6 @@ describe('IdentityProvider', () => {
                 name: 'John Doe',
                 role: 'user',
                 client_id: 'test-client-id',
-                session_state: 'test-session-state',
-                check_session_iframe: 'test-check-session-iframe',
             });
 
             expect(next).toHaveBeenCalled();

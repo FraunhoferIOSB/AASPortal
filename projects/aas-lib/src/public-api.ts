@@ -32,7 +32,6 @@ export * from './lib/core/auth/endpoint-auth-form/endpoint-auth-form';
 export * from './lib/core/auth/login-form/login-form';
 export * from './lib/core/auth/profile-form/profile-form';
 export * from './lib/core/auth/register-form/register-form';
-export * from './lib/core/auth/session-check';
 export * from './lib/core/confirm-dialog/confirm-dialog';
 export * from './lib/core/notify/notify.component';
 export * from './lib/core/notify/notify.service';
