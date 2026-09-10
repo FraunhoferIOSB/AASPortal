@@ -22,8 +22,6 @@ export interface User {
 export interface SessionUser extends User {
     role: UserRole;
     client_id: string;
-    session_state?: string;
-    check_session_iframe?: string;
 }
 
 /** The user profile. */

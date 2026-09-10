@@ -12,9 +12,9 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 import { User, noop } from 'aas-core';
 import { LOGGER } from 'aas-package';
-import { COOKIE_STORE } from '../cookie-storage/cookie-store.js';
 import { ERRORS } from '../errors.js';
 import { Variable } from '../variable.js';
+import { USER_RIGHTS_STORE } from './user-rights-store.js';
 
 /** Injection token. */
 export const IDENTITY_PROVIDER: InjectionToken<IdentityProviderClient> = Symbol('IDENTITY_PROVIDER');
@@ -28,7 +28,7 @@ export interface RefreshTokenResponse {
 /** Defines an identifier provider client. */
 export abstract class IdentityProviderClient {
     protected readonly logger = container.resolve(LOGGER);
-    protected readonly cookies = container.resolve(COOKIE_STORE);
+    protected readonly userRights = container.resolve(USER_RIGHTS_STORE);
     protected readonly variable = container.resolve(Variable);
     protected readonly clientId = this.variable.CLIENT_ID;
 
@@ -41,6 +41,7 @@ export abstract class IdentityProviderClient {
      * @param res The response.
      */
     public async me(req: express.Request, res: express.Response): Promise<express.Response | void> {
+        res.set('Cache-Control', 'no-store');
         return res.json(req.user ?? null);
     }
 
@@ -58,13 +59,6 @@ export abstract class IdentityProviderClient {
      * @param res The response.
      */
     public abstract callback(req: express.Request, res: express.Response): Promise<express.Response | void>;
-
-    /**
-     *
-     * @param req The request.
-     * @param res The response.
-     */
-    public abstract checkSession(req: express.Request, res: express.Response): Promise<express.Response | void>;
 
     /**
      * The logout method for the identity provider. This method is called when a user tries to log out.
@@ -120,7 +114,7 @@ export abstract class IdentityProviderClient {
                         }
 
                         if (!endpoints) {
-                            endpoints = await this.cookies.getEndpoints(userId);
+                            endpoints = await this.userRights.getEndpoints(userId);
                             req.session.endpoints = endpoints;
                         }
                     }
@@ -130,8 +124,6 @@ export abstract class IdentityProviderClient {
                         name: req.session.name!,
                         role: req.session.role!,
                         client_id: this.clientId,
-                        session_state: req.session.session_state,
-                        check_session_iframe: req.session.check_session_iframe,
                     };
                 } catch (error) {
                     if (error.name !== 'TokenExpiredError' || !refresh_token) {
@@ -148,8 +140,6 @@ export abstract class IdentityProviderClient {
                             ...tokenData.user,
                             role: req.session.role!,
                             client_id: this.clientId,
-                            session_state: req.session.session_state,
-                            check_session_iframe: req.session.check_session_iframe,
                         };
                     } catch (error) {
                         noop(error);
@@ -167,8 +157,6 @@ export abstract class IdentityProviderClient {
                         ...tokenData.user,
                         role: req.session.role!,
                         client_id: this.clientId,
-                        session_state: req.session.session_state,
-                        check_session_iframe: req.session.check_session_iframe,
                     };
                 } catch (error) {
                     noop(error);

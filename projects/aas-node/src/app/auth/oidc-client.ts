@@ -7,7 +7,7 @@
  *****************************************************************************/
 
 import express from 'express';
-import { container, singleton } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import jwt from 'jsonwebtoken';
 import jwksClient, { JwksClient } from 'jwks-rsa';
 import * as z from 'zod';
@@ -16,7 +16,6 @@ import { ApplicationError, ErrorData } from 'aas-core';
 
 import { IdentityProviderClient, RefreshTokenResponse } from './identity-provider-client.js';
 import { ERRORS } from '../errors.js';
-import { USER_RIGHTS_STORE } from './user-rights-store.js';
 
 export const AuthorizationServerSchema = z.object({
     issuer: z.url(),
@@ -53,7 +52,6 @@ export interface TokenEndpointResponse {
 
 @singleton()
 export class OidcClient extends IdentityProviderClient {
-    private readonly userRights = container.resolve(USER_RIGHTS_STORE);
     private configuration?: AuthorizationServer;
     private readonly server: string;
     private readonly clientSecret: string;
@@ -98,7 +96,6 @@ export class OidcClient extends IdentityProviderClient {
             const token_endpoint = configuration.token_endpoint;
             const redirect_uri = this.variable.REDIRECT_URI ?? `${req.protocol}://${req.host}/auth/callback`;
             const code = String(req.query.code);
-            const session_state = String(req.query.session_state);
             const code_verifier = String(req.session.code_verifier);
             const state = req.session.state;
             delete req.session.code_verifier;
@@ -137,26 +134,17 @@ export class OidcClient extends IdentityProviderClient {
                 } satisfies ErrorData);
             }
 
-            if (session_state && configuration.check_session_iframe) {
-                req.session.session_state = session_state;
-                req.session.check_session_iframe = configuration.check_session_iframe;
-            }
-
             const tokenData = (await response.json()) as TokenEndpointResponse;
             const { id, name } = this.decodeAccessToken(tokenData.access_token);
             req.session.user_id = id;
             req.session.name = name;
-            req.session.role = (await this.userRights.get(id)).role;
+            req.session.role = await this.userRights.getRole(id);
             req.session.access_token = tokenData.access_token;
             req.session.refresh_token = tokenData.refresh_token;
             res.redirect(new URL('start', this.variable.HOST_URL ?? `${req.protocol}://${req.host}`).href);
         } catch (error) {
             return this.sendError(res, error);
         }
-    }
-
-    public override async checkSession(req: express.Request, res: express.Response): Promise<express.Response | void> {
-        return res.sendStatus(501);
     }
 
     public override async logout(req: express.Request, res: express.Response): Promise<express.Response> {

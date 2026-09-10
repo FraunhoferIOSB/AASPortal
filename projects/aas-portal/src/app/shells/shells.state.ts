@@ -6,7 +6,7 @@
  *
  *****************************************************************************/
 
-import { computed, inject, Injectable, linkedSignal, signal, untracked } from '@angular/core';
+import { computed, debounced, inject, Injectable, linkedSignal, signal, untracked } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { httpResource } from '@angular/common/http';
@@ -50,15 +50,17 @@ export class ShellsState {
     private readonly selected$ = signal(initialData.selected);
     private readonly position$ = signal(initialData.position);
     private readonly subject = new Subject<AASDocument[]>();
+    private readonly debouncedFilter = debounced(() => this.filterText(), 500);
 
     private readonly resource = httpResource<AASPagedResult>(
         () => {
-            const filter = this.filterText();
+            const filter = this.debouncedFilter.value();
             const cursor: AASCursor = {
                 limit: this.limit(),
                 next: this.position().next,
                 previous: this.position().previous,
             };
+
             let url = `/api/v1/documents?cursor=${encodeBase64Url(JSON.stringify(cursor))}`;
             if (filter) {
                 url += `&filter=${encodeBase64Url(filter)}`;
@@ -148,12 +150,15 @@ export class ShellsState {
      */
     public update(newState: Partial<ShellsData>): void {
         if (newState.position !== undefined) {
-            this.position$.set(newState.position);
+            const position = this.position$();
+            if (position.next !== newState.position?.next || position.previous !== newState.position?.previous) {
+                this.position$.set(newState.position);
+            }
         } else if (newState.limit !== undefined || newState.filterText !== undefined) {
-            // Changing the page size or the search filter invalidates the current pagination
-            // cursor (it points at a document boundary from the previous query), so jump back
-            // to the first page instead of silently re-using a now-stale cursor.
-            this.position$.set({ next: undefined, previous: null });
+            const position = this.position$();
+            if (position.next !== undefined || position.previous !== null) {
+                this.position$.set({ next: undefined, previous: null });
+            }
         }
 
         if (newState.limit !== undefined) {

@@ -75,8 +75,6 @@ describe('SqliteSessionStore', () => {
             access_token: 'access-token',
             refresh_token: 'refresh-token',
             expires_at: 1234567890,
-            session_state: 'session-state',
-            check_session_iframe: 'https://example.com/session',
             ...overrides,
         };
     }

@@ -29,8 +29,8 @@ import { decodeBase64Url } from 'aas-package';
 
 import { EndpointProvider } from '../provider/endpoint-provider.js';
 import { ERRORS } from '../errors.js';
-import { COOKIE_STORE, CookieStore } from '../cookie-storage/cookie-store.js';
 import { AASIndexClient } from '../index/aas-index-client.js';
+import { USER_RIGHTS_STORE, UserRightsStore } from '../auth/user-rights-store.js';
 
 @injectable()
 @Route('/api/v1/endpoints')
@@ -38,7 +38,7 @@ import { AASIndexClient } from '../index/aas-index-client.js';
 export class EndpointsController extends Controller {
     public constructor(
         @inject(EndpointProvider) private readonly provider: EndpointProvider,
-        @inject(COOKIE_STORE) private readonly cookieStorage: CookieStore,
+        @inject(USER_RIGHTS_STORE) private readonly userRightsStore: UserRightsStore,
         @inject(AASIndexClient) private readonly index: AASIndexClient,
     ) {
         super();
@@ -169,7 +169,7 @@ export class EndpointsController extends Controller {
             throw new ApplicationError(ERRORS.UNAUTHENTICATED_ACCESS, {}, 401);
         }
 
-        return (await this.cookieStorage.getEndpoints(user.id)).map(endpoint => {
+        return (await this.userRightsStore.getEndpoints(user.id)).map(endpoint => {
             if (endpoint.headers) {
                 const headers: Record<string, string> = {};
                 for (const key in endpoint.headers) {
@@ -198,9 +198,9 @@ export class EndpointsController extends Controller {
             throw new ApplicationError(ERRORS.UNAUTHORIZED_ACCESS, {}, 401);
         }
 
-        await this.cookieStorage.updatesEndpoints(user.id, items);
+        await this.userRightsStore.update(user.id, { endpoints: items });
         if (req.session) {
-            req.session.endpoints = await this.cookieStorage.getEndpoints(user.id);
+            req.session.endpoints = await this.userRightsStore.getEndpoints(user.id);
         }
     }
 

@@ -103,10 +103,6 @@ export class App {
             await this.identityProvider.callback(req, res);
         });
 
-        this.app.get('/auth/login_status_iframe.html', async (req, res) => {
-            await this.identityProvider.checkSession(req, res);
-        });
-
         this.app.post('/auth/logout', async (req, res) => {
             await this.identityProvider.logout(req, res);
         });
