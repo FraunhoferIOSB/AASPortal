@@ -91,6 +91,20 @@ describe('IdentityProvider', () => {
         expect(identityProvider).toBeInstanceOf(IdentityProvider);
     });
 
+    describe('me', () => {
+        it('should prevent caching the current user', async () => {
+            const req = createSpyObj<express.Request>([], {
+                user: { id: 'john.doe@email.com', name: 'John Doe', role: 'user', client_id: 'test-client-id' },
+            });
+            const res = createSpyObj<express.Response>(['set', 'json']);
+
+            await identityProvider.me(req, res);
+
+            expect(res.set).toHaveBeenCalledWith('Cache-Control', 'no-store');
+            expect(res.json).toHaveBeenCalledWith(req.user);
+        });
+    });
+
     describe('middleware', () => {
         it('should return a middleware function', () => {
             const middleware = identityProvider.middleware();

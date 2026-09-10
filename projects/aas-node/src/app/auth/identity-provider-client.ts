@@ -41,6 +41,7 @@ export abstract class IdentityProviderClient {
      * @param res The response.
      */
     public async me(req: express.Request, res: express.Response): Promise<express.Response | void> {
+        res.set('Cache-Control', 'no-store');
         return res.json(req.user ?? null);
     }
 

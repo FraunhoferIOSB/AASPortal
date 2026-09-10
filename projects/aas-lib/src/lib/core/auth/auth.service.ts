@@ -6,12 +6,12 @@
  *
  *****************************************************************************/
 
-import { inject, Injectable, computed, signal, DOCUMENT } from '@angular/core';
+import { inject, Injectable, computed, signal, DOCUMENT, effect } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { map, Observable, of, switchMap, take, tap, throwError } from 'rxjs';
+import { interval, map, Observable, of, switchMap, take, tap, throwError } from 'rxjs';
 import {
     UserProfile,
     UserRole,
@@ -40,14 +40,33 @@ export class AuthService {
     public constructor() {
         this.http.get<SessionUser | null>('/auth/me').subscribe({
             next: user => {
-                this._user.set(user);
-                this.cache.clear();
+                this.setUser(user);
             },
             error: error => {
-                this._user.set(null);
-                this.cache.clear();
+                this.setUser(null);
                 console.error(error);
             },
+        });
+
+        effect(onCleanup => {
+            if (!this.isAuthenticated()) {
+                return;
+            }
+
+            const subscription = interval(30_000)
+                .pipe(switchMap(() => this.http.get<SessionUser | null>('/auth/me')))
+                .subscribe({
+                    next: user => {
+                        if (user === null) {
+                            this.setUser(null);
+                        }
+                    },
+                    error: () => {
+                        this.setUser(null);
+                    },
+                });
+
+            onCleanup(() => subscription.unsubscribe());
         });
     }
 
@@ -122,7 +141,7 @@ export class AuthService {
 
                 return this.http
                     .post<SessionUser>(callback, credentials, { params: queryParams })
-                    .pipe(map(user => this._user.set(user)));
+                    .pipe(map(user => this.setUser(user)));
             }),
         );
     }
@@ -139,7 +158,7 @@ export class AuthService {
         }
 
         return this.http.post('/auth/logout', null, { responseType: 'text' }).pipe(
-            map(() => this._user.set(null)),
+            map(() => this.setUser(null)),
             tap(() => this.window.location.assign('/auth/login')),
         );
     }
@@ -157,14 +176,14 @@ export class AuthService {
      * @param profile The updated user profile.
      */
     public updateAccount(profile: UserProfile): Observable<void> {
-        return this.http.patch<SessionUser>('/auth/accounts', profile).pipe(map(user => this._user.set(user)));
+        return this.http.patch<SessionUser>('/auth/accounts', profile).pipe(map(user => this.setUser(user)));
     }
 
     /**
      * Deletes the account of the current authenticated user.
      */
     public deleteAccount(): Observable<void> {
-        return this.http.delete('/auth/accounts', { responseType: 'text' }).pipe(map(() => this._user.set(null)));
+        return this.http.delete('/auth/accounts', { responseType: 'text' }).pipe(map(() => this.setUser(null)));
     }
 
     /**
@@ -182,5 +201,10 @@ export class AuthService {
      */
     public updateEndpointAuth(items: AASEndpointAuth[]): Observable<void> {
         return this.http.patch('/api/v1/endpoints/auth', items, { responseType: 'text' }).pipe(map(() => void 0));
+    }
+
+    private setUser(user: SessionUser | null): void {
+        this._user.set(user);
+        this.cache.clear();
     }
 }
