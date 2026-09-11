@@ -9,7 +9,7 @@
 import { inject, singleton } from 'tsyringe';
 import path from 'path';
 import { Readable } from 'stream';
-import { LOGGER, Logger } from 'aas-package';
+import { LOGGER, type Logger } from 'aas-package';
 import {
     AASDocument,
     aas,

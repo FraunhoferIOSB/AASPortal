@@ -103,7 +103,6 @@ describe('EndpointController', () => {
                 type: 'command',
                 name: 'ScanEndpoint',
                 args: { endpoint: configuredEndpoint, taskId: task?.id },
-                application: 'ScanApp',
             } satisfies CommandData);
         });
 
@@ -162,7 +161,6 @@ describe('EndpointController', () => {
                 type: 'command',
                 name: 'ScanEndpoint',
                 args: { endpoint: recurringEndpoint, taskId: task?.id },
-                application: 'ScanApp',
             } satisfies CommandData);
         });
     });
@@ -228,7 +226,6 @@ describe('EndpointController', () => {
                 type: 'command',
                 name: 'ScanEndpoint',
                 args: { endpoint: { ...endpoint, schedule: { type: 'manual' } }, taskId: task?.id },
-                application: 'ScanApp',
             } satisfies CommandData);
         });
     });

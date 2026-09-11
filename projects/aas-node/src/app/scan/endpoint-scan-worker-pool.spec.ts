@@ -24,7 +24,6 @@ vi.mock(import('worker_threads'), () => {
                     type: 'event',
                     name: 'End',
                     args: {},
-                    application: 'ScanApp',
                 } satisfies EventData);
             }
         });
@@ -110,7 +109,6 @@ describe('EndpointScanWorkerPool', () => {
                 type: 'command',
                 name: 'scan',
                 args: { endpoint: 'Endpoint 1' },
-                application: 'test-app',
             };
 
             workerPool.execute(commandData);
@@ -124,7 +122,6 @@ describe('EndpointScanWorkerPool', () => {
                 type: 'command',
                 name: 'scan',
                 args: { taskId: 1, endpoint: 'Endpoint 1' },
-                application: 'test-app',
             };
 
             workerPool.execute(commandData);
@@ -136,21 +133,18 @@ describe('EndpointScanWorkerPool', () => {
                 type: 'command',
                 name: 'scan',
                 args: { taskId: 1, endpoint: 'Endpoint 1' },
-                application: 'test-app',
             } satisfies CommandData);
 
             workerPool.execute({
                 type: 'command',
                 name: 'scan',
                 args: { taskId: 2, endpoint: 'Endpoint 2' },
-                application: 'test-app',
             } satisfies CommandData);
 
             workerPool.execute({
                 type: 'command',
                 name: 'scan',
                 args: { taskId: 3, endpoint: 'Endpoint 3' },
-                application: 'test-app',
             } satisfies CommandData);
 
             expect(workerPool['waiting'].length).toBe(1);
@@ -169,14 +163,12 @@ describe('EndpointScanWorkerPool', () => {
                 type: 'command',
                 name: 'scan',
                 args: { taskId: 1, endpoint: 'Endpoint 1' },
-                application: 'test-app',
             } satisfies CommandData);
 
             workerPool.execute({
                 type: 'command',
                 name: 'scan',
                 args: { taskId: 2, endpoint: 'Endpoint 2' },
-                application: 'test-app',
             } satisfies CommandData);
 
             await expect(workerPool.dispose()).resolves.toBe(void 0);

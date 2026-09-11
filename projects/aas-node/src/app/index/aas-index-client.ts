@@ -10,8 +10,8 @@ import { container, singleton } from 'tsyringe';
 import path from 'path';
 import { isMainThread, MessagePort, MessageChannel, parentPort, SHARE_ENV, Worker } from 'worker_threads';
 import { aas, AASEndpoint, AASCursor, AASPagedResult, PagedResult, AASDocument } from 'aas-core';
-import { IAASIndex, ChannelCommand, CommandName, ChannelResponse, isChannelError, ChannelError } from './aas-index.js';
 
+import { AASIndex, ChannelCommand, CommandName, ChannelResponse, isChannelError, ChannelError } from './aas-index.js';
 import { Variable } from '../variable.js';
 import { CommandData, isCommandData, isResponseData, WorkerData } from '../types.js';
 
@@ -25,7 +25,7 @@ type ResolvePending = {
  * Represents a client for the AAS index worker thread.
  */
 @singleton()
-export class AASIndexClient implements IAASIndex {
+export class AASIndexClient implements AASIndex {
     private readonly variable = container.resolve(Variable);
     private readonly worker?: Worker;
     private readonly pending = new Map<number, ResolvePending>();
@@ -37,20 +37,11 @@ export class AASIndexClient implements IAASIndex {
             const { port1, port2 } = new MessageChannel();
             this.port = port2;
             const script = path.resolve(this.variable.CONTENT_ROOT, 'aas-idx.js');
-            const workerName = 'AASNode Worker';
-            this.worker = new Worker(script, { env: SHARE_ENV, name: workerName });
+            const name = 'AASIndex Worker';
+            this.worker = new Worker(script, { env: SHARE_ENV, name });
             this.worker.on('error', this.onWorkerError);
             this.worker.on('message', this.onWorkerMessage);
-            this.worker.postMessage(
-                {
-                    application: 'IndexApp',
-                    type: 'command',
-                    name: 'connect',
-                    args: { port: port1, name: workerName },
-                } satisfies CommandData,
-                [port1],
-            );
-
+            this.connect(port1, name);
             this.port.on('message', this.onMessage);
         } else {
             parentPort?.on('message', this.onParentPortMessage);
@@ -60,7 +51,6 @@ export class AASIndexClient implements IAASIndex {
     public connect(port: MessagePort, name: string): void {
         this.worker?.postMessage(
             {
-                application: 'IndexApp',
                 type: 'command',
                 name: 'connect',
                 args: { port, name },
@@ -169,7 +159,6 @@ export class AASIndexClient implements IAASIndex {
         this.port.off('message', this.onMessage);
         if (this.worker) {
             this.worker.postMessage({
-                application: 'IndexApp',
                 type: 'command',
                 name: 'shutdown',
                 args: {},

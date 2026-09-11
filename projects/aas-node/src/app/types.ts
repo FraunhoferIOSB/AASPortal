@@ -31,8 +31,6 @@ declare module 'express-session' {
 
 /** The data sent to and from a worker thread. */
 export interface WorkerData {
-    /** The application for which the data is intended. */
-    application: string;
     /** The type of the data. */
     type: 'command' | 'response' | 'event' | 'error';
 }

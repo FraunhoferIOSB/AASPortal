@@ -135,7 +135,6 @@ export class EndpointScanWorkerPool extends EventEmitter implements Disposable {
             });
 
             task.worker.postMessage({
-                application: 'ScanApp',
                 type: 'command',
                 name: 'CancelScan',
                 args: { taskId, endpoint },
@@ -169,7 +168,6 @@ export class EndpointScanWorkerPool extends EventEmitter implements Disposable {
             this.index.connect(port1, workerName);
             worker.postMessage(
                 {
-                    application: 'ScanApp',
                     type: 'command',
                     name: 'connect',
                     args: { port: port2, name: workerName },

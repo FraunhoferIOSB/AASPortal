@@ -10,12 +10,12 @@ import { container, singleton } from 'tsyringe';
 import { parentPort, MessagePort } from 'worker_threads';
 import { aas, AASCursor, AASDocument, AASEndpoint } from 'aas-core';
 import { LOGGER } from 'aas-package';
-import { AAS_INDEX, ChannelCommand, ChannelError, ChannelResponse, IAASIndex, CommandName } from './aas-index.js';
+import { AAS_INDEX, ChannelCommand, ChannelError, ChannelResponse, AASIndex, CommandName } from './aas-index.js';
 import { ResponseData, ErrorData, isCommandData, WorkerData } from '../types.js';
 
 @singleton()
 export class IndexApp {
-    private readonly index: IAASIndex = container.resolve(AAS_INDEX);
+    private readonly index: AASIndex = container.resolve(AAS_INDEX);
     private readonly logger = container.resolve(LOGGER);
     private readonly messageQueue: [MessagePort, ChannelCommand][] = [];
     private readonly ports: MessagePort[] = [];
@@ -39,7 +39,6 @@ export class IndexApp {
                     });
 
                     parentPort?.postMessage({
-                        application: 'IndexApp',
                         type: 'response',
                         command: 'shutdown',
                         result: 'IndexApp shutdown complete.',
@@ -50,7 +49,6 @@ export class IndexApp {
             }
         } catch (error) {
             parentPort?.postMessage({
-                application: 'IndexApp',
                 type: 'error',
                 message: error.message,
                 stack: error.stack,

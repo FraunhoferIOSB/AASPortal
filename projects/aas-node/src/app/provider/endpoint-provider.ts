@@ -7,7 +7,7 @@
  *****************************************************************************/
 
 import { inject, singleton } from 'tsyringe';
-import { LOGGER, Logger } from 'aas-package';
+import { LOGGER, type Logger } from 'aas-package';
 import {
     LiveRequest,
     WebSocketData,
@@ -53,13 +53,16 @@ export class EndpointProvider {
      * Starts the AAS provider.
      * @param wsServer The web socket server instance.
      */
-    public start(wsServer: WSNode): void {
-        this.wsServer = wsServer;
-        this.sender = new MessageSender(wsServer);
-        this.wsServer.on('message', this.onClientMessage);
-        this.initializeIndex()
-            .then(() => setTimeout(this.startScan, 100))
-            .catch(error => this.logger.error(error));
+    public async start(wsServer: WSNode): Promise<void> {
+        try {
+            this.wsServer = wsServer;
+            this.sender = new MessageSender(wsServer);
+            this.wsServer.on('message', this.onClientMessage);
+            await this.initializeIndex();
+            setTimeout(this.startScan, 100);
+        } catch (error) {
+            this.logger.error(error);
+        }
     }
 
     /**
@@ -316,7 +319,6 @@ export class EndpointProvider {
 
     private scanEndpoint = (task: Task, endpoint: AASEndpoint): void => {
         const data: CommandData = {
-            application: 'ScanApp',
             type: 'command',
             name: 'ScanEndpoint',
             args: { taskId: task.id, endpoint },

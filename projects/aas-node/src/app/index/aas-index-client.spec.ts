@@ -136,7 +136,6 @@ describe('AASIndexClient', () => {
 
         expect(client['worker']?.postMessage).toHaveBeenCalledWith(
             {
-                application: 'IndexApp',
                 type: 'command',
                 name: 'connect',
                 args: { port, name: 'worker-name' },
@@ -411,7 +410,6 @@ describe('AASIndexClient', () => {
 
         expect(port.off).toHaveBeenCalledWith('message', client['onMessage']);
         expect(worker.postMessage).toHaveBeenCalledWith({
-            application: 'IndexApp',
             type: 'command',
             name: 'shutdown',
             args: {},
