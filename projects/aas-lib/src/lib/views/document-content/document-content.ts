@@ -213,6 +213,7 @@ export class DocumentContent extends CompositeView implements OnDestroy {
             this.start.add('Favorite', `AAS#${document.endpoint}#${document.id}`, {
                 endpoint: document.endpoint,
                 id: document.id,
+                caption: 'DocumentContent.CAPTION',
                 href: `views/content;endpoint=${encodeBase64Url(document.endpoint)};id=${encodeBase64Url(document.id)}`,
             })
         ) {

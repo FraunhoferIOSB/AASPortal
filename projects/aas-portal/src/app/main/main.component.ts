@@ -106,8 +106,6 @@ export class MainComponent {
     public readonly links = signal<LinkDescriptor[]>([
         { id: LinkId.START, name: 'Main.START', url: '/start' },
         { id: LinkId.SHELLS, name: 'Main.SHELLS', url: '/shells' },
-        { id: LinkId.AAS, name: 'Main.AAS', url: '/aas' },
-        { id: LinkId.VIEW, name: 'Main.VIEW', url: '/views' },
         { id: LinkId.DASHBOARD, name: 'Main.DASHBOARD', url: '/dashboard' },
         { id: LinkId.ABOUT, name: 'Main.ABOUT', url: '/about' },
     ]).asReadonly();

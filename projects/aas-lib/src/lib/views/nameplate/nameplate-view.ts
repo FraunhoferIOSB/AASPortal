@@ -82,6 +82,7 @@ export class NameplateView extends LeafView implements OnDestroy {
 
         const endpoint = document.endpoint;
         const id = document.id;
+        const caption = 'Nameplate.CAPTION';
         const details = this.getFavoriteDetails(document, nameplate, [
             'ManufacturerName',
             'ManufacturerProductType',
@@ -92,7 +93,7 @@ export class NameplateView extends LeafView implements OnDestroy {
 
         const notes = this.getFavoriteNotes(document, nameplate, ['ManufacturerProductDesignation']);
         const href = `/views/Nameplate;endpoint=${encodeBase64Url(endpoint)};id=${encodeBase64Url(id)}`;
-        if (!this.start.add('Favorite', `DNP#${endpoint}#${id}`, { endpoint, id, details, notes, href })) {
+        if (!this.start.add('Favorite', `DNP#${endpoint}#${id}`, { endpoint, id, caption, details, notes, href })) {
             return of(void 0);
         }
 

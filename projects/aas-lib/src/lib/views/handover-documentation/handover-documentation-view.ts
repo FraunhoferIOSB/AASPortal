@@ -73,8 +73,9 @@ export class HandoverDocumentationView extends LeafView implements OnDestroy {
 
         const endpoint = document.endpoint;
         const id = document.id;
+        const caption = 'HandoverDocumentation.CAPTION';
         const href = `/views/HandoverDocumentation;endpoint=${encodeBase64Url(endpoint)};id=${encodeBase64Url(id)}`;
-        if (!this.start.add('Favorite', `HOD#${endpoint}#${id}`, { endpoint, id, href })) {
+        if (!this.start.add('Favorite', `HOD#${endpoint}#${id}`, { endpoint, id, caption, href })) {
             return of(void 0);
         }
 

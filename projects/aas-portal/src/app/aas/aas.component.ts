@@ -131,6 +131,7 @@ export class AASComponent implements OnInit, OnDestroy {
                 endpoint: document.endpoint,
                 id: document.id,
                 href: `/aas;endpoint=${encodeBase64Url(document.endpoint)};id=${encodeBase64Url(document.id)}`,
+                caption: 'AAS.CAPTION',
             })
         ) {
             return this.start.save();

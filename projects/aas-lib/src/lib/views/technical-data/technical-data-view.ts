@@ -64,8 +64,9 @@ export class TechnicalDataView extends LeafView implements OnDestroy {
 
         const endpoint = document.endpoint;
         const id = document.id;
+        const caption = 'TechnicalData.CAPTION';
         const href = `/views/TechnicalData;endpoint=${encodeBase64Url(endpoint)};id=${encodeBase64Url(id)}`;
-        if (!this.start.add('Favorite', `TDV#${endpoint}#${id}`, { endpoint, id, href })) {
+        if (!this.start.add('Favorite', `TDV#${endpoint}#${id}`, { endpoint, id, caption, href })) {
             return of(void 0);
         }
 
