@@ -64,8 +64,6 @@ export class IdentityProvider extends IdentityProviderClient {
         const code_challenge_method = String(req.query.code_challenge_method);
         const code_challenge = String(req.query.code_challenge);
         const code_verifier = req.session.code_verifier;
-        delete req.session.state;
-        delete req.session.code_verifier;
         if (
             this.variable.CLIENT_ID !== req.query.client_id ||
             !state ||

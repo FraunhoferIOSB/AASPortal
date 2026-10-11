@@ -6,7 +6,7 @@
  !
  !---------------------------------------------------------------------------->
 
-<div id="shells-container" class="container-fluid h-100 w-100 px-2 overflow-auto">
+<div class="h-100 w-100 px-2 overflow-auto">
     <fhg-aas-table
         [documents]="documents()"
         [selected]="selected()"
@@ -14,7 +14,7 @@
         [expression]="filter()"
     ></fhg-aas-table>
 
-    <div class="w-100 d-block d-sm-none">
+    <div class="w-100 d-block d-md-none">
         @if (!activeFavoritesList()) {
             <ng-container *ngTemplateOutlet="pagination"></ng-container>
         }
@@ -22,46 +22,20 @@
 </div>
 
 <ng-template #toolbar>
-    <div class="w-100 d-none d-sm-block">
-        <div class="mb-1 d-none d-lg-flex flex-row">
+    <div class="w-100 d-none d-md-block">
+        <div class="mb-1">
             <h2 translate="Shells.CAPTION"></h2>
         </div>
-
         <div class="d-flex flex-row">
-            <div class="btn-group input-group flex-nowrap me-2 my-1 flex-grow-1">
-                <ng-container *ngTemplateOutlet="filterControl"></ng-container>
+            <div class="input-group flex-nowrap me-2 my-1 flex-fill">
+                <ng-container *ngTemplateOutlet="favorites"></ng-container>
             </div>
 
-            <div class="input-group flex-nowrap me-2 my-1">
-                <button
-                    class="btn btn-outline-primary"
-                    type="button"
-                    (click)="addToFavorites().subscribe()"
-                    ngbTooltip="{{ 'Shells.FAVORITES_TOOLTIP' | translate }}"
-                    placement="bottom"
-                    [openDelay]="300"
-                    [closeDelay]="500"
-                >
-                    <i class="bi bi-star"></i>
-                </button>
-                <select
-                    [ngClass]="
-                        activeFavoritesList()
-                            ? 'form-select flex-grow-0 w-auto fst-normal fw-normal'
-                            : 'form-select flex-grow-0 w-auto fst-italic fw-light'
-                    "
-                    [ngModel]="activeFavoritesList()"
-                    (ngModelChange)="setActiveFavoriteList($event)"
-                >
-                    @for (option of favoritesLists(); track option; let i = $index) {
-                        @if (i === 0) {
-                            <option class="fst-italic fw-light" [value]="''" translate="Shells.FAVORITES"></option>
-                        } @else {
-                            <option class="fst-normal fw-normal" [value]="option">{{ option }}</option>
-                        }
-                    }
-                </select>
-            </div>
+            @if (!activeFavoritesList()) {
+                <div class="btn-group input-group flex-nowrap me-2 my-1 flex-fill">
+                    <ng-container *ngTemplateOutlet="filterControl"></ng-container>
+                </div>
+            }
 
             <div class="d-none d-md-flex">
                 <button
@@ -94,10 +68,25 @@
         </div>
     </div>
 
-    <div class="w-100 d-block d-sm-none">
-        <div class="input-group btn-group flex-nowrap my-1 w-100">
-            <ng-container *ngTemplateOutlet="filterControl"></ng-container>
+    <!-- small screens -->
+    <div class="w-100 d-block d-md-none">
+        <div class="mb-1">
+            <h2 translate="Shells.CAPTION"></h2>
         </div>
+        @if (activeFavoritesList()) {
+            <div class="input-group flex-nowrap me-2 my-1 w-100">
+                <ng-container *ngTemplateOutlet="favorites"></ng-container>
+            </div>
+        } @else {
+            <div class="d-flex flex-row">
+                <div class="input-group flex-nowrap me-2 my-1 w-50">
+                    <ng-container *ngTemplateOutlet="favorites"></ng-container>
+                </div>
+                <div class="input-group btn-group flex-nowrap my-1 w-50">
+                    <ng-container *ngTemplateOutlet="filterControl"></ng-container>
+                </div>
+            </div>
+        }
     </div>
 
     <div [hidden]="someSelected() === false" class="fhg-hidden-selected-bar">
@@ -124,7 +113,7 @@
                 (click)="downloadPackages().subscribe()"
                 [disabled]="someSelected() === false"
                 ngbTooltip="{{ 'Shells.DOWNLOAD_TOOLTIP' | translate }}"
-                placement="bottom"
+                placement="top"
                 [openDelay]="300"
                 [closeDelay]="500"
             >
@@ -136,7 +125,7 @@
                 (click)="deletePackages().subscribe()"
                 [disabled]="someSelected() === false"
                 ngbTooltip="{{ 'Shells.DELETE_TOOLTIP' | translate }}"
-                placement="bottom"
+                placement="top"
                 [openDelay]="300"
                 [closeDelay]="500"
             >
@@ -148,7 +137,7 @@
                 (click)="addToStart().subscribe()"
                 [disabled]="someSelected() === false"
                 ngbTooltip="{{ 'Shells.ADD_TO_START_TOOLTIP' | translate }}"
-                placement="bottom"
+                placement="top"
                 [openDelay]="300"
                 [closeDelay]="500"
             >
@@ -213,6 +202,37 @@
         [openDelay]="300"
         [closeDelay]="500"
     />
+</ng-template>
+
+<ng-template #favorites>
+    <button
+        id="AID_ADD_TO_FAVORITES"
+        class="btn btn-outline-primary"
+        type="button"
+        (click)="addToFavorites().subscribe()"
+        ngbTooltip="{{ 'Shells.FAVORITES_TOOLTIP' | translate }}"
+        placement="bottom"
+        [openDelay]="300"
+        [closeDelay]="500"
+    >
+        <i class="bi bi-star"></i>
+    </button>
+    <select
+        id="AID_FAVORITES_LIST"
+        [ngClass]="
+            activeFavoritesList() ? 'form-select w-auto fst-normal fw-normal' : 'form-select w-auto fst-italic fw-light'
+        "
+        [ngModel]="activeFavoritesList()"
+        (ngModelChange)="setActiveFavoriteList($event)"
+    >
+        @for (option of favoritesLists(); track option; let i = $index) {
+            @if (i === 0) {
+                <option class="fst-italic fw-light" [value]="''" translate="Shells.FAVORITES"></option>
+            } @else {
+                <option class="fst-normal fw-normal" [value]="option">{{ option }}</option>
+            }
+        }
+    </select>
 </ng-template>
 
 <ng-template #pagination>

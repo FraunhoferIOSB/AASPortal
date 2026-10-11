@@ -61,8 +61,9 @@ export class ServiceRequestNotification extends LeafView implements OnDestroy {
 
         const endpoint = document.endpoint;
         const id = document.id;
+        const caption = 'ServiceRequestNotification.CAPTION';
         const href = `/views/ServiceRequestNotification;endpoint=${encodeBase64Url(endpoint)};id=${encodeBase64Url(id)}`;
-        if (!this.start.add('Favorite', `SRN#${endpoint}#${id}`, { endpoint, id, href })) {
+        if (!this.start.add('Favorite', `SRN#${endpoint}#${id}`, { endpoint, id, caption, href })) {
             return of(void 0);
         }
 

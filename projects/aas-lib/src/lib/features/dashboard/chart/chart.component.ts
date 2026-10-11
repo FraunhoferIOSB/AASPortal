@@ -8,7 +8,7 @@
 
 import { Component, effect, ElementRef, inject, input, viewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { TranslateDirective } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { LiveNode, LiveRequest, WebSocketData } from 'aas-core';
 import { Dashboard } from '../dashboard';
@@ -21,7 +21,7 @@ import { WebSocketService } from '../../../shared/services/web-socket.service';
     templateUrl: './chart.component.html',
     styleUrl: './chart.component.scss',
     standalone: true,
-    imports: [TranslateDirective],
+    imports: [TranslatePipe],
 })
 export class ChartComponent extends Dashboard {
     private configuration?: ChartConfigurationTuple;

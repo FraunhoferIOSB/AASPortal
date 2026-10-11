@@ -411,6 +411,7 @@ export class ShellsComponent implements OnDestroy {
                 href: `/aas;endpoint=${encodeBase64Url(document.endpoint)};id=${encodeBase64Url(document.id)}`,
                 id: document.id,
                 endpoint: document.endpoint,
+                caption: 'AAS.CAPTION',
             });
         }
 

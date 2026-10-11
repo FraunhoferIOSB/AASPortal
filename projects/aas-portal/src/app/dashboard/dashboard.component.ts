@@ -8,10 +8,10 @@
 
 import 'chart.js/auto';
 import { EMPTY, first, Observable, Subscription } from 'rxjs';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import {
     Component,
     ElementRef,
@@ -22,7 +22,6 @@ import {
     effect,
     viewChild,
     viewChildren,
-    Inject,
     signal,
     inject,
 } from '@angular/core';
@@ -58,10 +57,10 @@ import {
     selector: 'fhg-dashboard',
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.scss'],
-    imports: [FormsModule, TranslatePipe, ChartEditComponent],
+    imports: [FormsModule, TranslateDirective, TranslatePipe, ChartEditComponent, NgbTooltip],
 })
 export class DashboardComponent extends Dashboard implements OnInit, OnDestroy {
-    @Inject(WINDOW) private readonly window = inject(WINDOW);
+    private readonly window = inject(WINDOW);
     private readonly service = inject(DashboardService);
     private readonly activeRoute = inject(ActivatedRoute);
     private readonly translate = inject(TranslateService);
@@ -119,14 +118,8 @@ export class DashboardComponent extends Dashboard implements OnInit, OnDestroy {
 
     public readonly editMode = this.service.editMode;
 
-    public readonly firstItems = computed(() => {
-        const items = this.activePage().items;
-        return items.slice(0, items.length % this.viewPortSize());
-    });
-
     public readonly items = computed(() => {
-        const items = this.activePage().items;
-        return items.slice(items.length % this.viewPortSize());
+        return this.activePage().items;
     });
 
     public readonly viewPortSize = signal<ViewPortSize>(this.getViewPortSize());

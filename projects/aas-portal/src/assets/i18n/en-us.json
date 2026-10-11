@@ -124,6 +124,7 @@
         "SHOW": "Show..."
     },
     "Dashboard": {
+        "CAPTION": "Dashboard",
         "EMPTY": "The dashboard is empty.",
         "LABEL_NAME": "Name",
         "LABEL_COLOR": "Color",

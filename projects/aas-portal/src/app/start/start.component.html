@@ -6,7 +6,7 @@
  !
  !---------------------------------------------------------------------------->
 
-<div class="overflow-auto h-100 px-2">
+<div class="overflow-y-auto overflow-x-hidden h-100 w-100 px-3">
     @if (isEmpty()) {
         @let html = welcome();
         @if (html) {
@@ -19,7 +19,7 @@
             </div>
         }
     } @else {
-        <div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-2 row-cols-xl-3 row-cols-xxl-4">
+        <div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-xl-3">
             @for (item of items(); track item.id; let i = $index) {
                 <div class="p-2 rounded col" [class.bg-info-subtle]="item.selected()">
                     <div
@@ -41,7 +41,7 @@
 
 <ng-template #toolbar>
     <div class="w-100">
-        <div class="mb-1 d-none d-lg-flex flex-row">
+        <div class="mb-1">
             <h2 translate="Start.CAPTION"></h2>
         </div>
 

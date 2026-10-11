@@ -26,8 +26,6 @@ export type FavoriteDetail = {
 export class FavoriteComponent {
     private readonly document$ = signal<AASDocument | undefined>(undefined);
     private readonly aas$ = computed(() => this.document$()?.content?.assetAdministrationShells?.at(0));
-    private readonly detailItems$ = signal<FavoriteDetail[]>([]);
-    private readonly noteItems$ = signal<string[]>([]);
 
     public constructor(
         private readonly translate: TranslateService,
@@ -38,34 +36,6 @@ export class FavoriteComponent {
             const id = this.id();
             if (endpoint && id) {
                 this.getDocument(id, endpoint);
-            }
-        });
-
-        effect(() => {
-            const details = this.details();
-            if (!details || details.length === 0) {
-                const document = this.document$();
-                if (document === undefined) {
-                    return;
-                }
-
-                this.detailItems$.set(this.getFavoriteDetails(document));
-            } else {
-                this.detailItems$.set(details);
-            }
-        });
-
-        effect(() => {
-            const notes = this.notes();
-            if (!notes || notes.length === 0) {
-                const document = this.document$();
-                if (document === undefined) {
-                    return;
-                }
-
-                this.noteItems$.set(this.getFavoriteNotes(document));
-            } else {
-                this.noteItems$.set(notes);
             }
         });
     }
@@ -82,19 +52,21 @@ export class FavoriteComponent {
 
     public readonly href = input('');
 
-    public readonly caption = computed(() => {
-        const aas = this.aas$();
-        if (aas === undefined) {
-            return '';
-        }
+    public readonly caption = input('');
 
-        const displayName = aas.displayName;
-        if (displayName === undefined) {
-            return aas.idShort;
-        }
+    // public readonly caption = computed(() => {
+    //     const aas = this.aas$();
+    //     if (aas === undefined) {
+    //         return '';
+    //     }
 
-        return getLocaleValue(displayName, this.currentLang()) ?? aas.idShort;
-    });
+    //     const displayName = aas.displayName;
+    //     if (displayName === undefined) {
+    //         return aas.idShort;
+    //     }
+
+    //     return getLocaleValue(displayName, this.currentLang()) ?? aas.idShort;
+    // });
 
     public readonly thumbnail = computed(() => {
         const document = this.document$();
@@ -105,9 +77,33 @@ export class FavoriteComponent {
         return `/api/v1/endpoints/${encodeBase64Url(document.endpoint)}/documents/${encodeBase64Url(document.id)}/thumbnail`;
     });
 
-    public readonly detailItems = this.detailItems$.asReadonly();
+    public readonly detailItems = computed(() => {
+        const details = this.details();
+        if (!details || details.length === 0) {
+            const document = this.document$();
+            if (document === undefined) {
+                return;
+            }
 
-    public readonly noteItems = this.noteItems$.asReadonly();
+            return this.getFavoriteDetails(document);
+        } else {
+            return details;
+        }
+    });
+
+    public readonly noteItems = computed(() => {
+        const notes = this.notes();
+        if (!notes || notes.length === 0) {
+            const document = this.document$();
+            if (document === undefined) {
+                return;
+            }
+
+            return this.getFavoriteNotes(document);
+        } else {
+            return notes;
+        }
+    });
 
     private versionToString(administration: aas.AdministrativeInformation | undefined): string | undefined {
         if (administration === undefined) {

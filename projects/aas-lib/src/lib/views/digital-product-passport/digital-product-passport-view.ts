@@ -133,8 +133,9 @@ export class DigitalProductPassportView extends CompositeView implements OnDestr
 
         const endpoint = document.endpoint;
         const id = document.id;
+        const caption = 'DigitalProductPassport.CAPTION';
         const href = `/view/DigitalProductPassport;endpoint=${encodeBase64Url(endpoint)};id=${encodeBase64Url(id)}`;
-        this.start.add('Favorite', `DPP#${endpoint}#${id}`, { endpoint, id, href });
+        this.start.add('Favorite', `DPP#${endpoint}#${id}`, { endpoint, id, caption, href });
         return this.start.save();
     }
 

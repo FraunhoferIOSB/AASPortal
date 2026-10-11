@@ -75,8 +75,9 @@ export class DocumentBrowserView extends CompositeView implements OnDestroy {
 
         const endpoint = document.endpoint;
         const id = document.id;
+        const caption = 'DocumentBrowser.CAPTION';
         const href = `/views/Browser;endpoint=${encodeBase64Url(endpoint)};id=${encodeBase64Url(id)}`;
-        if (!this.start.add('Favorite', `DBV#${endpoint}#${id}`, { endpoint, id, href })) {
+        if (!this.start.add('Favorite', `DBV#${endpoint}#${id}`, { endpoint, id, caption, href })) {
             return of(void 0);
         }
 

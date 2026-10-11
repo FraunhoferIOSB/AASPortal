@@ -14,7 +14,7 @@ import { IndexApp } from './index/index-app.js';
 import { AAS_INDEX } from './index/aas-index.js';
 import { MySqlIndex } from './index/mysql-index.js';
 import { Variable } from './variable.js';
-import { SqliteIndex } from './index/sqlite/sqlite-index.js';
+import { SqliteIndex } from './index/sqlite-index.js';
 
 parentPort?.on('close', () => {
     container.dispose();

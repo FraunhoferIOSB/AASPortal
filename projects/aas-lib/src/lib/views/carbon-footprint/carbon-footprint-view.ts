@@ -77,8 +77,9 @@ export class CarbonFootprintView extends LeafView implements OnDestroy {
 
         const endpoint = document.endpoint;
         const id = document.id;
+        const caption = 'CarbonFootprint.CAPTION';
         const href = `/views/CarbonFootprint;endpoint=${encodeBase64Url(endpoint)};id=${encodeBase64Url(id)}`;
-        if (!this.start.add('Favorite', `CFV#${endpoint}#${id}`, { endpoint, id, href })) {
+        if (!this.start.add('Favorite', `CFV#${endpoint}#${id}`, { endpoint, id, caption, href })) {
             return of(void 0);
         }
 

@@ -6,17 +6,13 @@
  *
  *****************************************************************************/
 
-th.th-w-icon {
-    width: 48px;
-}
-
-th.th-w-checkbox {
+.fhg-col-checkbox {
     width: 32px;
 }
 
-div.wh-4 {
-    width: 16px;
-    height: 16px;
+.fhg-col-thumbnail {
+    width: 1%;
+    white-space: nowrap;
 }
 
 .table thead {
@@ -31,14 +27,6 @@ div.wh-4 {
 
 .table {
     --bs-table-hover-bg: var(--bs-primary-bg-subtle); // or any color/theme variable
-}
-
-.id-text {
-    font-family: ui-monospace, monospace;
-}
-
-a {
-    text-decoration: none;
 }
 
 .fhg-mobile-row {
