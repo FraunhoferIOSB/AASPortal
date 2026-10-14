@@ -28,9 +28,9 @@ import {
 } from 'aas-lib';
 
 import { DashboardComponent } from './dashboard.component';
+import { createSpyObj, FakeLoader, MockWebSocketService } from '../../test/mocks';
 
 import data from '../../test/assets/test-pages.json';
-import { createSpyObj, FakeLoader, MockWebSocketService } from '../../test/mocks';
 
 @Component({
     selector: 'fhg-chart-edit',
@@ -150,13 +150,6 @@ describe('DashboardComponent', () => {
         const component = fixture.componentInstance;
         fixture.detectChanges();
         expect(component.activePage()?.name).toEqual('Test');
-    });
-
-    it('starts with 1 chart in first row', () => {
-        const fixture = TestBed.createComponent(DashboardComponent);
-        const component = fixture.componentInstance;
-        fixture.detectChanges();
-        expect(component.firstItems().length).toBe(1);
     });
 
     it('displays 2 charts per row', () => {

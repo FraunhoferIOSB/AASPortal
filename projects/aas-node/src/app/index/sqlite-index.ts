@@ -631,13 +631,13 @@ export class SqliteIndex implements AASIndex {
         if (generator) {
             if (endpoints.length > 0) {
                 sql = this.db.prepare(
-                    `SELECT DISTINCT documents.* FROM documents INNER JOIN elements ON documents.uuid = elements.uuid WHERE documents.endpoint IN ('${endpoints.join(
+                    `SELECT documents.* FROM documents JOIN elements ON documents.uuid = elements.uuid WHERE documents.endpoint IN ('${endpoints.join(
                         "','",
                     )}') AND (${generator.generate(params)}) ORDER BY CONCAT(documents.endpoint, documents.id) ASC LIMIT ?`,
                 );
             } else {
                 sql = this.db.prepare(
-                    `SELECT DISTINCT documents.* FROM documents INNER JOIN elements ON documents.uuid = elements.uuid WHERE ${generator.generate(
+                    `SELECT documents.* FROM documents JOIN elements ON documents.uuid = elements.uuid WHERE ${generator.generate(
                         params,
                     )} ORDER BY CONCAT(documents.endpoint, documents.id) ASC LIMIT ?`,
                 );
@@ -675,7 +675,7 @@ export class SqliteIndex implements AASIndex {
         if (generator) {
             if (endpoints.length > 0) {
                 sql = this.db.prepare(
-                    `SELECT DISTINCT documents.* FROM documents INNER JOIN elements ON documents.uuid = elements.uuid WHERE documents.endpoint IN ('${endpoints.join(
+                    `SELECT documents.* FROM documents WHERE documents.endpoint IN ('${endpoints.join(
                         '","',
                     )}') AND CONCAT(documents.endpoint, documents.id) >= ? AND (${generator.generate(
                         params,
@@ -683,7 +683,7 @@ export class SqliteIndex implements AASIndex {
                 );
             } else {
                 sql = this.db.prepare(
-                    `SELECT DISTINCT documents.* FROM documents INNER JOIN elements ON documents.uuid = elements.uuid WHERE CONCAT(documents.endpoint, documents.id) >= ? AND (${generator.generate(
+                    `SELECT documents.* FROM documents WHERE CONCAT(documents.endpoint, documents.id) >= ? AND (${generator.generate(
                         params,
                     )}) ORDER BY CONCAT(documents.endpoint, documents.id) ASC LIMIT ?`,
                 );
@@ -725,7 +725,7 @@ export class SqliteIndex implements AASIndex {
         if (generator) {
             if (endpoints.length > 0) {
                 sql = this.db.prepare(
-                    `SELECT DISTINCT documents.* FROM documents INNER JOIN elements ON documents.uuid = elements.uuid WHERE documents.endpoint IN ('${endpoints.join(
+                    `SELECT documents.* FROM documents WHERE documents.endpoint IN ('${endpoints.join(
                         "','",
                     )}') AND CONCAT(documents.endpoint, documents.id) < ? AND (${generator.generate(
                         params,
@@ -733,7 +733,7 @@ export class SqliteIndex implements AASIndex {
                 );
             } else {
                 sql = this.db.prepare(
-                    `SELECT DISTINCT documents.* FROM documents INNER JOIN elements ON documents.uuid = elements.uuid WHERE CONCAT(documents.endpoint, documents.id) < ? AND (${generator.generate(
+                    `SELECT documents.* FROM documents WHERE CONCAT(documents.endpoint, documents.id) < ? AND (${generator.generate(
                         params,
                     )}) ORDER BY CONCAT(documents.endpoint, documents.id) DESC LIMIT ?`,
                 );
@@ -769,7 +769,7 @@ export class SqliteIndex implements AASIndex {
         if (generator) {
             if (endpoints.length > 0) {
                 sql = this.db.prepare(
-                    `SELECT DISTINCT documents.* FROM documents INNER JOIN elements ON documents.uuid = elements.uuid WHERE documents.endpoint IN ('${endpoints.join(
+                    `SELECT documents.* FROM documents WHERE documents.endpoint IN ('${endpoints.join(
                         "','",
                     )}') AND (${generator.generate(
                         params,
@@ -777,7 +777,7 @@ export class SqliteIndex implements AASIndex {
                 );
             } else {
                 sql = this.db.prepare(
-                    `SELECT DISTINCT documents.* FROM documents INNER JOIN elements ON documents.uuid = elements.uuid WHERE ${generator.generate(
+                    `SELECT documents.* FROM documents WHERE ${generator.generate(
                         params,
                     )} ORDER BY CONCAT(documents.endpoint, documents.id) DESC LIMIT ?`,
                 );
@@ -860,7 +860,7 @@ export class SqliteIndex implements AASIndex {
                 return null;
             }
 
-            return referable.value.map(item => item.text).join(' ');
+            return Array.from(new Set(referable.value.map(item => item.text))).join(' ');
         }
 
         if (isFile(referable)) {

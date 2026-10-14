@@ -7,19 +7,26 @@
  !---------------------------------------------------------------------------->
 
 <div class="overflow-y-auto overflow-x-hidden px-3 h-100 w-100">
-    @if (!isEmpty()) {
+    @let chartItems = items();
+    @if (chartItems.length === 1) {
+        @let item = chartItems[0];
+        <div class="h-auto w-auto border border-2 rounded" [class.border-info]="item.selected()">
+            @if (!editMode()) {
+                <canvas #chart [id]="item.id"></canvas>
+            } @else {
+                <fhg-chart-edit [item]="item"></fhg-chart-edit>
+            }
+        </div>
+    } @else if (chartItems.length > 1) {
         <div class="row row-cols-1 row-cols-lg-2">
-            @for (item of items(); track item) {
+            @for (item of chartItems; track item.id) {
                 <div
                     class="col"
                     (click)="toggleSelection($event, item)"
                     (keydown.enter)="toggleSelection($event, item)"
                     tabindex="-1"
                 >
-                    <div
-                        class="my-1 h-auto w-auto border border-2 rounded"
-                        [class.border-info]="item.selected()"
-                    >
+                    <div class="my-1 h-auto w-auto border border-2 rounded" [class.border-info]="item.selected()">
                         @if (!editMode()) {
                             <canvas #chart [id]="item.id"></canvas>
                         } @else {

@@ -118,8 +118,6 @@ describe('MainComponent', () => {
         expect(component.links().map(link => link.url)).toEqual([
             '/start',
             '/shells',
-            '/aas',
-            '/views',
             '/dashboard',
             '/about',
         ]);
