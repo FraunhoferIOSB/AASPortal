@@ -152,11 +152,11 @@ describe('DashboardComponent', () => {
         expect(component.activePage()?.name).toEqual('Test');
     });
 
-    it('displays 2 charts per row', () => {
+    it('displays 3 charts per row', () => {
         const fixture = TestBed.createComponent(DashboardComponent);
         const component = fixture.componentInstance;
         fixture.detectChanges();
-        expect(component.items().length).toBe(2);
+        expect(component.items().length).toBe(3);
     });
 
     describe('single selection', () => {
