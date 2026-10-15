@@ -78,9 +78,16 @@ export class StartComponent implements OnDestroy {
         this.toolbar.clear();
     }
 
-    /** Toggles the selection of a favorite.  */
+    /** Selects a favorite, or toggles it when Command is pressed. */
     public toggleSelected($event: MouseEvent, item: StartTileItem): void {
-        item.selected.update(state => !state);
+        if ($event.metaKey) {
+            item.selected.update(state => !state);
+        } else {
+            this.items().forEach(favorite => {
+                favorite.selected.set(favorite === item && !item.selected());
+            });
+        }
+
         $event.stopPropagation();
     }
 

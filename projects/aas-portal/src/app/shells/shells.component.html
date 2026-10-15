@@ -23,9 +23,7 @@
 
 <ng-template #toolbar>
     <div class="w-100 d-none d-md-block">
-        <div class="mb-1">
-            <h2 translate="Shells.CAPTION"></h2>
-        </div>
+        <h2 class="mb-1" translate="Shells.CAPTION"></h2>
         <div class="d-flex flex-row">
             <div class="input-group flex-nowrap me-2 my-1 flex-fill">
                 <ng-container *ngTemplateOutlet="favorites"></ng-container>
@@ -49,6 +47,9 @@
                     [closeDelay]="500"
                 >
                     <i class="bi bi-upload"></i>
+                    <div class="d-none d-lg-inline px-2">
+                        <span translate="Shells.UPLOAD"></span>
+                    </div>
                 </button>
             </div>
             <input

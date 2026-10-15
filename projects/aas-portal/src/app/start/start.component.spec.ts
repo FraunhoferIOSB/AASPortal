@@ -173,6 +173,35 @@ describe('StartComponent', () => {
         expect(component.welcome()).toEqual('Welcome');
     });
 
+    describe('favorite selection', () => {
+        it('selects an unselected favorite and deselects the others', () => {
+            favorites[0].selected.set(true);
+            const event = new MouseEvent('click');
+
+            component.toggleSelected(event, favorites[1]);
+
+            expect(favorites.map(favorite => favorite.selected())).toEqual([false, true, false]);
+        });
+
+        it('deselects a selected favorite', () => {
+            favorites[0].selected.set(true);
+            const event = new MouseEvent('click');
+
+            component.toggleSelected(event, favorites[0]);
+
+            expect(favorites.map(favorite => favorite.selected())).toEqual([false, false, false]);
+        });
+
+        it('toggles only the clicked favorite when Command is pressed', () => {
+            favorites[0].selected.set(true);
+            const event = new MouseEvent('click', { metaKey: true });
+
+            component.toggleSelected(event, favorites[1]);
+
+            expect(favorites.map(favorite => favorite.selected())).toEqual([true, true, false]);
+        });
+    });
+
     describe('remove', () => {
         it('removes the selected favorite', async () => {
             start.save.mockReturnValue(of(void 0));
