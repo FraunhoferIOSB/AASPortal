@@ -53,6 +53,9 @@ export class StartComponent implements OnDestroy {
     /** Indicates whether at least one favorite is selected. */
     public readonly someSelected = computed(() => this.items().some(item => item.selected()));
 
+    /** The selected favorites. */
+    public readonly selectedItems = computed(() => this.items().filter(item => item.selected()));
+
     /** Determines whether a single selected favorite can be moved to the left. */
     public readonly canMoveLeft = computed(() => {
         const indexes = this.items()
@@ -136,5 +139,9 @@ export class StartComponent implements OnDestroy {
         });
 
         return this.start.save();
+    }
+
+    public deselect(): void {
+        this.items().forEach(item => item.selected.set(false));
     }
 }

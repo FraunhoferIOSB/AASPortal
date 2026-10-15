@@ -160,6 +160,10 @@ describe('StartComponent', () => {
         it('disables can move right', () => {
             expect(component.canMoveRight()).toBe(false);
         });
+
+        it('returns the selected favorites', () => {
+            expect(component.selectedItems()).toEqual([favorites[0], favorites[1]]);
+        });
     });
 
     it('shows favorites', () => {
@@ -199,6 +203,15 @@ describe('StartComponent', () => {
             component.toggleSelected(event, favorites[1]);
 
             expect(favorites.map(favorite => favorite.selected())).toEqual([true, true, false]);
+        });
+
+        it('deselects all favorites', () => {
+            favorites[0].selected.set(true);
+            favorites[1].selected.set(true);
+
+            component.deselect();
+
+            expect(favorites.map(favorite => favorite.selected())).toEqual([false, false, false]);
         });
     });
 
