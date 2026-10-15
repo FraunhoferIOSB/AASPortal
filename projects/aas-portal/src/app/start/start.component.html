@@ -19,9 +19,14 @@
             </div>
         }
     } @else {
-        <div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-xl-3">
+        <div
+            class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-xl-3"
+            cdkDropList
+            cdkDropListOrientation="mixed"
+            (cdkDropListDropped)="drop($event)"
+        >
             @for (item of items(); track item.id; let i = $index) {
-                <div class="p-2 rounded col" [class.bg-info-subtle]="item.selected()">
+                <div class="p-2 rounded col" [class.bg-info-subtle]="item.selected()" cdkDrag>
                     <div
                         class="card overflow-hidden"
                         (click)="toggleSelected($event, item)"
@@ -52,11 +57,7 @@
                 class="d-flex flex-row align-items-center px-3 bg-secondary-subtle me-2 my-1 border border-black border-opacity-25 rounded-3"
             >
                 <div class="d-flex flex-row align-items-center text-white mx-2">
-                    <button
-                        type="button"
-                        class="btn text-primary"
-                        (click)="deselect()"
-                    >
+                    <button type="button" class="btn text-primary" (click)="deselect()">
                         <i class="bi bi-x fs-3"></i>
                     </button>
                     <span>{{ selectedItems().length }} selected</span>

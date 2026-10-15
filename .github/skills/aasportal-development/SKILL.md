@@ -29,6 +29,17 @@ The repository uses TypeScript, ESM, npm workspaces, and Node.js 24. Keep ESM im
 4. Add or update focused Vitest coverage for behavior changes when a neighboring test pattern exists.
 5. Run the narrowest relevant check, then the workspace test or build when the change affects compiled behavior.
 
+## Angular 22
+
+- Build standalone components: declare template dependencies in the component `imports` array rather than using NgModules.
+- Prefer signals for component and local UI state. Derive state with `computed`, update writable signals with `set` or `update`, and avoid duplicating derived values in mutable state.
+- Use `inject()` for dependency injection and Angular signal queries such as `viewChild` and `contentChild` for view queries. Use constructor injection only when a base class or another Angular API requires it.
+- Keep components focused on presentation and interaction; move reusable or shared state and side effects into services or state classes.
+- Use `ChangeDetectionStrategy.OnPush` for new components unless the component has a documented compatibility reason not to. Do not introduce Zone.js-dependent behavior; preserve the zoneless test setup with `provideZonelessChangeDetection()`.
+- Prefer the built-in template control flow (`@if`, `@for`, and `@switch`) in new or substantially revised templates. For repeated lists, provide a stable `track` expression.
+- Use `input`, `output`, and `model` APIs for new component contracts where they fit the existing public API. Preserve existing decorator-based public APIs unless migration is part of the change.
+- Test through public component behavior, templates, and services. Use Angular's `TestBed`, Vitest, and `provideZonelessChangeDetection()` consistently with neighboring tests.
+
 ## Commands
 
 Run commands from the repository root.

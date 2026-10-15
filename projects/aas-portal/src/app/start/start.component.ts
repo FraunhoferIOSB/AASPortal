@@ -9,6 +9,7 @@
 import { Observable, of } from 'rxjs';
 import { NgComponentOutlet } from '@angular/common';
 import { Component, effect, OnDestroy, TemplateRef, viewChild, computed, inject } from '@angular/core';
+import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 
 import { StartService, ToolbarService } from 'aas-lib';
 import { StartState, StartTileItem } from './start.state';
@@ -22,7 +23,7 @@ import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
     selector: 'fhg-start',
     templateUrl: './start.component.html',
     styleUrl: './start.component.scss',
-    imports: [NgComponentOutlet, NgbTooltip, TranslatePipe, TranslateDirective],
+    imports: [CdkDrag, CdkDropList, NgComponentOutlet, NgbTooltip, TranslatePipe, TranslateDirective],
 })
 export class StartComponent implements OnDestroy {
     private readonly state = inject(StartState);
@@ -139,6 +140,21 @@ export class StartComponent implements OnDestroy {
         });
 
         return this.start.save();
+    }
+
+    /** Moves a favorite to its new drag-and-drop position. */
+    public drop(event: CdkDragDrop<StartTileItem[]>): void {
+        if (event.previousIndex === event.currentIndex) {
+            return;
+        }
+
+        this.start.tiles.update(tiles => {
+            const reordered = [...tiles];
+            moveItemInArray(reordered, event.previousIndex, event.currentIndex);
+            return reordered;
+        });
+
+        this.start.save().subscribe();
     }
 
     public deselect(): void {
