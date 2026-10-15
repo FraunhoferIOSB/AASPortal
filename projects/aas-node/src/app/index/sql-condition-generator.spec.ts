@@ -17,10 +17,11 @@ describe('SqlConditionGenerator', () => {
             generator = new SqlConditionGenerator('Hello world');
             const values: unknown[] = [];
             expect(generator.generate(values)).toEqual(
-                'documents.endpoint REGEXP ? OR documents.id REGEXP ? OR documents.idShort REGEXP ? OR elements.idShort REGEXP ? OR elements.id REGEXP ? OR elements.stringValue REGEXP ?',
+                'documents.endpoint REGEXP ? OR documents.id REGEXP ? OR documents.idShort REGEXP ? OR documents.assetId REGEXP ? OR EXISTS (SELECT 1 FROM elements WHERE documents.uuid = elements.uuid AND (elements.idShort REGEXP ? OR elements.id REGEXP ? OR elements.stringValue REGEXP ?))',
             );
 
             expect(values).toEqual([
+                'Hello|world',
                 'Hello|world',
                 'Hello|world',
                 'Hello|world',
@@ -35,7 +36,7 @@ describe('SqlConditionGenerator', () => {
             const values: unknown[] = [];
 
             expect(generator.generate(values)).toBe(
-                "elements.modelType = 'prop' AND elements.idShort LIKE ? AND elements.stringValue LIKE ? AND elements.modelType = 'prop' AND elements.idShort LIKE ? AND elements.stringValue NOT LIKE ?",
+                "EXISTS (SELECT 1 FROM elements WHERE documents.uuid = elements.uuid AND (elements.modelType = 'prop' AND elements.idShort LIKE ? AND elements.stringValue LIKE ? AND elements.modelType = 'prop' AND elements.idShort LIKE ? AND elements.stringValue NOT LIKE ?))",
             );
             expect(values).toEqual(['%name%', '%John Doe%', '%manufacturer%', '%Acme%']);
         });
@@ -47,7 +48,7 @@ describe('SqlConditionGenerator', () => {
             const values: unknown[] = [];
 
             expect(generator.generate(values)).toBe(
-                "elements.modelType = 'prop' AND elements.idShort LIKE ? AND elements.numberValue >= ? AND elements.modelType = 'prop' AND elements.idShort LIKE ? AND elements.numberValue >= ? AND elements.numberValue <= ? AND elements.modelType = 'prop' AND elements.idShort LIKE ? AND elements.bigintValue < ? AND elements.modelType = 'prop' AND elements.idShort LIKE ? AND elements.bigintValue >= ? AND elements.bigintValue <= ?",
+                "EXISTS (SELECT 1 FROM elements WHERE documents.uuid = elements.uuid AND (elements.modelType = 'prop' AND elements.idShort LIKE ? AND elements.numberValue >= ? AND elements.modelType = 'prop' AND elements.idShort LIKE ? AND elements.numberValue >= ? AND elements.numberValue <= ? AND elements.modelType = 'prop' AND elements.idShort LIKE ? AND elements.bigintValue < ? AND elements.modelType = 'prop' AND elements.idShort LIKE ? AND elements.bigintValue >= ? AND elements.bigintValue <= ?))",
             );
             expect(values).toEqual(['%temperature%', 42, '%range%', -5, 5, '%serial%', 123n, '%batch%', 1n, 9n]);
         });
@@ -57,7 +58,7 @@ describe('SqlConditionGenerator', () => {
             const values: unknown[] = [];
 
             expect(generator.generate(values)).toBe(
-                "elements.modelType = 'prop' AND elements.idShort LIKE ? AND elements.dateValue <= ? AND elements.modelType = 'prop' AND elements.idShort LIKE ? AND elements.dateValue >= ? AND elements.dateValue <= ?",
+                "EXISTS (SELECT 1 FROM elements WHERE documents.uuid = elements.uuid AND (elements.modelType = 'prop' AND elements.idShort LIKE ? AND elements.dateValue <= ? AND elements.modelType = 'prop' AND elements.idShort LIKE ? AND elements.dateValue >= ? AND elements.dateValue <= ?))",
             );
             expect(values).toEqual([
                 '%created%',
@@ -73,7 +74,7 @@ describe('SqlConditionGenerator', () => {
             const values: unknown[] = [];
 
             expect(generator.generate(values)).toBe(
-                "elements.modelType = 'prop' AND elements.idShort LIKE ? AND elements.booleanValue ? <> 0 OR elements.modelType = 'prop' AND elements.idShort LIKE ? AND elements.booleanValue ? = 0",
+                "EXISTS (SELECT 1 FROM elements WHERE documents.uuid = elements.uuid AND (elements.modelType = 'prop' AND elements.idShort LIKE ? AND elements.booleanValue ? <> 0 OR elements.modelType = 'prop' AND elements.idShort LIKE ? AND elements.booleanValue ? = 0))",
             );
             expect(values).toEqual(['%active%', true, '%disabled%', true]);
         });
@@ -83,8 +84,9 @@ describe('SqlConditionGenerator', () => {
             const values: unknown[] = [];
 
             expect(generator.generate(values)).toBe(
-                "elements.modelType = 'prop' AND elements.idShort LIKE ? AND elements.stringValue LIKE ? AND (elements.modelType = 'prop' AND elements.idShort LIKE ? AND elements.numberValue = ? OR elements.modelType = 'prop' AND elements.idShort LIKE ? AND elements.numberValue > ?)",
+                "EXISTS (SELECT 1 FROM elements WHERE documents.uuid = elements.uuid AND (elements.modelType = 'prop' AND elements.idShort LIKE ? AND elements.stringValue LIKE ? AND (EXISTS (SELECT 1 FROM elements WHERE documents.uuid = elements.uuid AND (elements.modelType = 'prop' AND elements.idShort LIKE ? AND elements.numberValue = ? OR elements.modelType = 'prop' AND elements.idShort LIKE ? AND elements.numberValue > ?)))))",
             );
+
             expect(values).toEqual(['%name%', '%primary%', '%rank%', 1, '%rank%', 2]);
         });
 
@@ -92,7 +94,10 @@ describe('SqlConditionGenerator', () => {
             generator = new SqlConditionGenerator('#prop');
             const values: unknown[] = [];
 
-            expect(generator.generate(values)).toBe("elements.modelType = 'prop'");
+            expect(generator.generate(values)).toBe(
+                "EXISTS (SELECT 1 FROM elements WHERE documents.uuid = elements.uuid AND (elements.modelType = 'prop'))",
+            );
+
             expect(values).toEqual([]);
         });
     });

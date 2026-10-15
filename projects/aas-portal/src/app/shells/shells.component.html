@@ -23,9 +23,7 @@
 
 <ng-template #toolbar>
     <div class="w-100 d-none d-md-block">
-        <div class="mb-1">
-            <h2 translate="Shells.CAPTION"></h2>
-        </div>
+        <h2 class="mb-1" translate="Shells.CAPTION"></h2>
         <div class="d-flex flex-row">
             <div class="input-group flex-nowrap me-2 my-1 flex-fill">
                 <ng-container *ngTemplateOutlet="favorites"></ng-container>
@@ -49,6 +47,9 @@
                     [closeDelay]="500"
                 >
                     <i class="bi bi-upload"></i>
+                    <div class="d-none d-lg-inline px-2">
+                        <span translate="Shells.UPLOAD"></span>
+                    </div>
                 </button>
             </div>
             <input
@@ -89,62 +90,63 @@
         }
     </div>
 
-    <div [hidden]="someSelected() === false" class="fhg-hidden-selected-bar">
-        <div
-            class="d-flex flex-row align-items-center px-3 bg-secondary-subtle me-2 my-1 border border-black border-opacity-25 rounded-3"
-        >
-            <div class="d-flex flex-row align-items-center text-white mx-2">
+    @if (!someSelected()) {
+        <div class="fhg-hidden-selected-bar">
+            <div
+                class="d-flex flex-row align-items-center px-3 bg-secondary-subtle me-2 my-1 border border-black border-opacity-25 rounded-3"
+            >
+                <div class="d-flex flex-row align-items-center text-white mx-2">
+                    <button
+                        type="button"
+                        class="btn text-primary"
+                        (click)="emptySelected()"
+                    >
+                        <i class="bi bi-x fs-3"></i>
+                    </button>
+                    <span>{{ selected().length }} selected</span>
+                </div>
+
+                <div class="vr vertical-line text-white"></div>
+
                 <button
                     type="button"
-                    class="btn text-primary"
-                    (click)="emptySelected()"
+                    class="btn text-primary bg-primary-subtle mx-2"
+                    (click)="downloadPackages().subscribe()"
                     [disabled]="someSelected() === false"
+                    ngbTooltip="{{ 'Shells.DOWNLOAD_TOOLTIP' | translate }}"
+                    placement="top"
+                    [openDelay]="300"
+                    [closeDelay]="500"
                 >
-                    <i class="bi bi-x fs-3"></i>
+                    <i class="bi bi-download"></i>
                 </button>
-                <span>{{ selected().length }} selected</span>
+                <button
+                    type="button"
+                    class="btn text-danger bg-danger-subtle"
+                    (click)="deletePackages().subscribe()"
+                    [disabled]="someSelected() === false"
+                    ngbTooltip="{{ 'Shells.DELETE_TOOLTIP' | translate }}"
+                    placement="top"
+                    [openDelay]="300"
+                    [closeDelay]="500"
+                >
+                    <i class="bi bi-trash"></i>
+                </button>
+                <button
+                    class="btn text-primary bg-primary-subtle ms-2"
+                    type="button"
+                    (click)="addToStart().subscribe()"
+                    [disabled]="someSelected() === false"
+                    ngbTooltip="{{ 'Shells.ADD_TO_START_TOOLTIP' | translate }}"
+                    placement="top"
+                    [openDelay]="300"
+                    [closeDelay]="500"
+                >
+                    <i class="bi bi-house-add"></i>
+                </button>
             </div>
-
-            <div class="vr vertical-line text-white"></div>
-
-            <button
-                type="button"
-                class="btn text-primary bg-primary-subtle mx-2"
-                (click)="downloadPackages().subscribe()"
-                [disabled]="someSelected() === false"
-                ngbTooltip="{{ 'Shells.DOWNLOAD_TOOLTIP' | translate }}"
-                placement="top"
-                [openDelay]="300"
-                [closeDelay]="500"
-            >
-                <i class="bi bi-download"></i>
-            </button>
-            <button
-                type="button"
-                class="btn text-danger bg-danger-subtle"
-                (click)="deletePackages().subscribe()"
-                [disabled]="someSelected() === false"
-                ngbTooltip="{{ 'Shells.DELETE_TOOLTIP' | translate }}"
-                placement="top"
-                [openDelay]="300"
-                [closeDelay]="500"
-            >
-                <i class="bi bi-trash"></i>
-            </button>
-            <button
-                class="btn text-primary bg-primary-subtle ms-2"
-                type="button"
-                (click)="addToStart().subscribe()"
-                [disabled]="someSelected() === false"
-                ngbTooltip="{{ 'Shells.ADD_TO_START_TOOLTIP' | translate }}"
-                placement="top"
-                [openDelay]="300"
-                [closeDelay]="500"
-            >
-                <i class="bi bi-house-add"></i>
-            </button>
         </div>
-    </div>
+    }
 </ng-template>
 
 <ng-template #filterControl>

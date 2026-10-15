@@ -57,9 +57,7 @@
 <!-- Toolbar -->
 <ng-template #toolbar>
     <div class="w-100 d-none d-sm-block">
-        <div class="mb-1 d-none d-lg-flex flex-row">
-            <h2 translate="AAS.CAPTION"></h2>
-        </div>
+        <h2 class="mb-1" translate="AAS.CAPTION"></h2>
         <div class="d-flex flex-row">
             <div class="button-group me-2 my-1">
                 <button
@@ -72,6 +70,9 @@
                     [closeDelay]="500"
                 >
                     <i class="bi bi-house-add"></i>
+                    <div class="d-none d-lg-inline px-2">
+                        <span translate="AAS.ADD_TO_START"></span>
+                    </div>
                 </button>
             </div>
             <div class="button-group ms-auto me-2 my-1">
@@ -85,6 +86,9 @@
                     [closeDelay]="500"
                 >
                     <i class="bi bi-diagram-3"></i>
+                    <div class="d-none d-lg-inline px-2">
+                        <span translate="AAS.OPEN_CONTENT_VIEW"></span>
+                    </div>
                 </button>
                 <button
                     [routerLink]="openBrowserView()"
@@ -95,7 +99,10 @@
                     [openDelay]="300"
                     [closeDelay]="500"
                 >
-                    <i class="bi bi-eye"></i>
+                    <i class="bi bi-box-arrow-in-down"></i>
+                    <div class="d-none d-lg-inline px-2">
+                        <span translate="AAS.OPEN_BROWSER_VIEW"></span>
+                    </div>
                 </button>
             </div>
         </div>

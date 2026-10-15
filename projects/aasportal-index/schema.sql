@@ -1,7 +1,7 @@
 USE `aas-index`;
 
 CREATE TABLE endpoints (
-    name VARCHAR(32) PRIMARY KEY,
+    name VARCHAR(64) PRIMARY KEY,
     url VARCHAR(255) UNIQUE NOT NULL,
     type VARCHAR(32) NOT NULL,
     version VARCHAR(8),
@@ -11,10 +11,10 @@ CREATE TABLE endpoints (
 
 CREATE TABLE documents (
     uuid CHAR(21) PRIMARY KEY,
-    address VARCHAR(255), 
-    endpoint VARCHAR(32), 
-    id VARCHAR(255), 
-    idShort VARCHAR(100), 
+    address VARCHAR(255) NOT NULL, 
+    endpoint VARCHAR(64) NOT NULL, 
+    id VARCHAR(255) NOT NULL, 
+    idShort VARCHAR(128) NOT NULL, 
     assetId VARCHAR(255),
     thumbnail TEXT, 
     timestamp LONG,
@@ -25,7 +25,7 @@ CREATE TABLE elements (
     uuid CHAR(21) NOT NULL,
     modelType VARCHAR(5) NOT NULL,
     id VARCHAR(255),
-    idShort VARCHAR(100) NOT NULL,
+    idShort VARCHAR(128) NOT NULL,
     stringValue VARCHAR(512),
     numberValue DOUBLE,
     bigintValue LONG,
@@ -34,8 +34,8 @@ CREATE TABLE elements (
 );
 
 CREATE TABLE submodelConceptDescriptions (
-    endpoint VARCHAR(32), 
-    id VARCHAR(255),
+    endpoint VARCHAR(64) NOT NULL, 
+    id VARCHAR(255) NOT NULL,
     conceptDescriptionIds TEXT,
-    UNIQUE (id, endpoint)
+    PRIMARY KEY (id, endpoint)
 );

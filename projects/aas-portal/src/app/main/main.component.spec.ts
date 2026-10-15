@@ -115,13 +115,6 @@ describe('MainComponent', () => {
         const component = fixture.componentInstance;
         fixture.detectChanges();
         expect(component.links()).toBeDefined();
-        expect(component.links().map(link => link.url)).toEqual([
-            '/start',
-            '/shells',
-            '/aas',
-            '/views',
-            '/dashboard',
-            '/about',
-        ]);
+        expect(component.links().map(link => link.url)).toEqual(['/start', '/shells', '/dashboard', '/about']);
     });
 });

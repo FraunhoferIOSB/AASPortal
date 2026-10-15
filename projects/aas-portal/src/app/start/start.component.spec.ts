@@ -12,6 +12,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { provideZonelessChangeDetection, signal, WritableSignal } from '@angular/core';
 import { provideTranslateService, TranslateLoader } from '@ngx-translate/core';
 import { lastValueFrom, of } from 'rxjs';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { StartService, ToolbarService } from 'aas-lib';
 import { StartComponent } from './start.component';
 import { createSpyObj, FakeLoader } from '../../test/mocks';
@@ -160,6 +161,10 @@ describe('StartComponent', () => {
         it('disables can move right', () => {
             expect(component.canMoveRight()).toBe(false);
         });
+
+        it('returns the selected favorites', () => {
+            expect(component.selectedItems()).toEqual([favorites[0], favorites[1]]);
+        });
     });
 
     it('shows favorites', () => {
@@ -171,6 +176,44 @@ describe('StartComponent', () => {
         items.set([]);
         expect(component.isEmpty()).toBe(true);
         expect(component.welcome()).toEqual('Welcome');
+    });
+
+    describe('favorite selection', () => {
+        it('selects an unselected favorite and deselects the others', () => {
+            favorites[0].selected.set(true);
+            const event = new MouseEvent('click');
+
+            component.toggleSelected(event, favorites[1]);
+
+            expect(favorites.map(favorite => favorite.selected())).toEqual([false, true, false]);
+        });
+
+        it('deselects a selected favorite', () => {
+            favorites[0].selected.set(true);
+            const event = new MouseEvent('click');
+
+            component.toggleSelected(event, favorites[0]);
+
+            expect(favorites.map(favorite => favorite.selected())).toEqual([false, false, false]);
+        });
+
+        it('toggles only the clicked favorite when Command is pressed', () => {
+            favorites[0].selected.set(true);
+            const event = new MouseEvent('click', { metaKey: true });
+
+            component.toggleSelected(event, favorites[1]);
+
+            expect(favorites.map(favorite => favorite.selected())).toEqual([true, true, false]);
+        });
+
+        it('deselects all favorites', () => {
+            favorites[0].selected.set(true);
+            favorites[1].selected.set(true);
+
+            component.deselect();
+
+            expect(favorites.map(favorite => favorite.selected())).toEqual([false, false, false]);
+        });
     });
 
     describe('remove', () => {
@@ -201,6 +244,18 @@ describe('StartComponent', () => {
             favorites[1].selected.set(true);
             await lastValueFrom(component.moveRight());
             expect(start.tiles()).toEqual([favorites[0].tile, favorites[2].tile, favorites[1].tile]);
+            expect(start.save).toHaveBeenCalled();
+        });
+    });
+
+    describe('drop', () => {
+        it('moves a favorite to its dropped position and saves the order', () => {
+            start.tiles.set(favorites.map(item => item.tile));
+            start.save.mockReturnValue(of(void 0));
+
+            component.drop({ previousIndex: 0, currentIndex: 2 } as CdkDragDrop<StartTileItem[]>);
+
+            expect(start.tiles()).toEqual([favorites[1].tile, favorites[2].tile, favorites[0].tile]);
             expect(start.save).toHaveBeenCalled();
         });
     });

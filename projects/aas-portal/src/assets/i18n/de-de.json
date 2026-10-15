@@ -8,8 +8,11 @@
         "LOAD_FAILED": "Diese AAS konnte nicht geladen werden.",
         "NO_PERMISSION": "Sie haben keine Berechtigung, diese AAS zu öffnen. Prüfen Sie, ob für diesen Endpunkt ein API-Schlüssel benötigt wird, und fügen Sie ihn unten hinzu.",
         "PLACEHOLDER_SEARCH": "Suche",
+        "ADD_TO_START": "Favorit",
         "ADD_TO_START_TOOLTIP": "Als Favorit zur Startseite hinzufügen.",
+        "OPEN_CONTENT_VIEW": "Inhalt",
         "OPEN_CONTENT_VIEW_TOOLTIP": "Struktursicht der Verwaltungsschale öffnen.",
+        "OPEN_BROWSER_VIEW": "Browser",
         "OPEN_BROWSER_VIEW_TOOLTIP": "Detailsicht der Verwaltungsschale öffnen."
     },
     "AASTable": {
@@ -393,6 +396,7 @@
         "PLACEHOLDER_FILTER": "Filter",
         "ServiceRequestNotification": "Serviceanfrage",
         "TechnicalData": "Technische Daten",
+        "UPLOAD": "Hochladen",
         "UPLOAD_TOOLTIP": "AASX-Package-Datei zu einem AAS-Endpunkt hochladen.",
         "FAVORITES_TOOLTIP": "Favoriten verwalten.",
         "VISIBLE_ENDPOINTS_TOOLTIP": "Sichtbare AAS-Endpunkte auswählen."

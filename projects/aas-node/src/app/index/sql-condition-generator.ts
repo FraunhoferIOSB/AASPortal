@@ -41,7 +41,7 @@ export class SqlConditionGenerator implements ConditionGenerator {
             orSqlTerms.push(andSqlTerms.join(' AND '));
         }
 
-        return orSqlTerms.join(' OR ');
+        return `EXISTS (SELECT 1 FROM elements WHERE documents.uuid = elements.uuid AND (${orSqlTerms.join(' OR ')}))`;
     }
 
     private evaluateTextExpression(conditions: OrCondition[], values: unknown[]): string {
@@ -52,7 +52,8 @@ export class SqlConditionGenerator implements ConditionGenerator {
         values.push(pattern);
         values.push(pattern);
         values.push(pattern);
-        return 'documents.endpoint REGEXP ? OR documents.id REGEXP ? OR documents.idShort REGEXP ? OR elements.idShort REGEXP ? OR elements.id REGEXP ? OR elements.stringValue REGEXP ?';
+        values.push(pattern);
+        return 'documents.endpoint REGEXP ? OR documents.id REGEXP ? OR documents.idShort REGEXP ? OR documents.assetId REGEXP ? OR EXISTS (SELECT 1 FROM elements WHERE documents.uuid = elements.uuid AND (elements.idShort REGEXP ? OR elements.id REGEXP ? OR elements.stringValue REGEXP ?))';
     }
 
     private createModelTypeSqlTerm(condition: ModelTypeCondition, values: unknown[]): string {
@@ -87,7 +88,8 @@ export class SqlConditionGenerator implements ConditionGenerator {
         values.push(phrase);
         values.push(phrase);
         values.push(phrase);
-        return '(documents.endpoint LIKE ? OR documents.id LIKE ? OR documents.idShort LIKE ? OR elements.idShort LIKE ? OR elements.id LIKE ? OR elements.stringValue LIKE ?)';
+        values.push(phrase);
+        return '(documents.endpoint LIKE ? OR documents.id LIKE ? OR documents.idShort LIKE ? OR documents.assetId LIKE ? OR elements.idShort LIKE ? OR elements.id LIKE ? OR elements.stringValue LIKE ?)';
     }
 
     private isDate(value: unknown): value is Date | [Date, Date] {
