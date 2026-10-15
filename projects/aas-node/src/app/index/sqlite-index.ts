@@ -631,13 +631,13 @@ export class SqliteIndex implements AASIndex {
         if (generator) {
             if (endpoints.length > 0) {
                 sql = this.db.prepare(
-                    `SELECT documents.* FROM documents JOIN elements ON documents.uuid = elements.uuid WHERE documents.endpoint IN ('${endpoints.join(
+                    `SELECT documents.* FROM documents WHERE documents.endpoint IN ('${endpoints.join(
                         "','",
                     )}') AND (${generator.generate(params)}) ORDER BY CONCAT(documents.endpoint, documents.id) ASC LIMIT ?`,
                 );
             } else {
                 sql = this.db.prepare(
-                    `SELECT documents.* FROM documents JOIN elements ON documents.uuid = elements.uuid WHERE ${generator.generate(
+                    `SELECT documents.* FROM documents WHERE ${generator.generate(
                         params,
                     )} ORDER BY CONCAT(documents.endpoint, documents.id) ASC LIMIT ?`,
                 );
