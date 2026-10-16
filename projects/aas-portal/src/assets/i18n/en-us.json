@@ -247,6 +247,10 @@
         "ADD_FAVORITE": "Add 1 AAS document. {{count}} favorites",
         "ADD_FAVORITES": "Add {{length}} AAS document. {{count}} favorites"
     },
+    "GenericSubmodel": {
+        "ADD_TO_START": "Favorite",
+        "ADD_TO_START_TOOLTIP": "Add as a favorite to the start page."
+    },
     "HandoverDocumentation": {
         "TITLE": "Handover Documentation",
         "EMPTY": "No handover documents available."
@@ -406,6 +410,9 @@
         "UPLOAD_TOOLTIP": "Upload AASX package file to an AAS Endpoint.",
         "FAVORITES_TOOLTIP": "Manage favorites.",
         "VISIBLE_ENDPOINTS_TOOLTIP": "Select visible AAS endpoints."
+    },
+    "SubmodelTree": {
+        "SEARCH_PLACEHOLDER": "Filter by name..."
     },
     "Start": {
         "CAPTION": "Start",

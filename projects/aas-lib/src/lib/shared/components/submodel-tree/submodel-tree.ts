@@ -7,9 +7,20 @@
  *****************************************************************************/
 
 import { NgTemplateOutlet } from '@angular/common';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { Component, computed, effect, inject, input, OnDestroy, signal, WritableSignal } from '@angular/core';
+import {
+    Component,
+    computed,
+    debounced,
+    effect,
+    inject,
+    input,
+    OnDestroy,
+    signal,
+    WritableSignal,
+} from '@angular/core';
 
 import {
     aas,
@@ -75,7 +86,7 @@ export type SubmodelTreeGroup = {
     selector: 'fhg-submodel-tree',
     templateUrl: './submodel-tree.html',
     styleUrl: './submodel-tree.scss',
-    imports: [NgTemplateOutlet],
+    imports: [FormsModule, NgTemplateOutlet],
 })
 export class SubmodelTree implements OnDestroy {
     private readonly translate = inject(TranslateService);
@@ -131,12 +142,7 @@ export class SubmodelTree implements OnDestroy {
     /** The committed search term that actually filters the tree -- see {@link queryDraft}. */
     public readonly query = signal('');
 
-    /**
-     * The search box's live text, updated on every keystroke. Kept separate from {@link query} (which
-     * drives the actual filtering/re-render) so typing doesn't recompute and re-render a large tree once
-     * per character -- {@link submitQuery} commits the draft to `query` on Enter instead.
-     */
-    public readonly queryDraft = signal('');
+    private readonly debouncedQuery = debounced(this.query, 300);
 
     private readonly currentLang = computed(() => this.translate.currentLang() ?? 'en-us');
 
@@ -154,7 +160,7 @@ export class SubmodelTree implements OnDestroy {
         return groups;
     });
 
-    public rootGroup = computed(() => this.groups()[0]);
+    public readonly rootGroup = computed(() => this.groups()[0]);
 
     public childGroups(path: string): SubmodelTreeGroup[] {
         return this.filtered().childrenByPath.get(path) ?? [];
@@ -191,17 +197,6 @@ export class SubmodelTree implements OnDestroy {
         this.expanded.set(next); // new Set, so the signal actually fires
     }
 
-    /** Commits {@link queryDraft} to {@link query}, actually applying the search (Enter key handler). */
-    public submitQuery(): void {
-        this.query.set(this.queryDraft());
-    }
-
-    /** Clears both the search box and the applied search. */
-    public clearQuery(): void {
-        this.queryDraft.set('');
-        this.query.set('');
-    }
-
     public itemsOf(path: string): SubmodelTreeItem[] {
         return this.filtered().itemsByPath.get(path) ?? [];
     }
@@ -214,18 +209,23 @@ export class SubmodelTree implements OnDestroy {
         this.webSocketSubscription?.unsubscribe();
     }
 
+    public setQuery(value: string): void {
+        this.query.set(value);
+    }
+
     private readonly filtered = computed(() => {
-        const q = this.query().trim().toLowerCase();
+        const query = this.debouncedQuery.hasValue() ? this.debouncedQuery.value().trim().toLocaleLowerCase() : '';
         const visible = new Set<string>();
         const itemsByPath = new Map<string, SubmodelTreeItem[]>();
 
         for (const group of this.groups()) {
-            const nameHit = q.length > 0 && group.name.toLowerCase().includes(q);
-            const items = !q || nameHit ? group.items : group.items.filter(i => i.name.toLowerCase().includes(q));
+            const nameHit = query.length > 0 && group.name.toLowerCase().includes(query);
+            const items =
+                !query || nameHit ? group.items : group.items.filter(i => i.name.toLowerCase().includes(query));
 
             itemsByPath.set(group.path, items);
 
-            if (!q || items.length > 0 || nameHit) {
+            if (!query || items.length > 0 || nameHit) {
                 const parts = group.path.split('/');
                 for (let i = 1; i <= parts.length; i++) {
                     visible.add(parts.slice(0, i).join('/'));

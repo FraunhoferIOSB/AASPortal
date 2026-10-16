@@ -241,6 +241,10 @@
         "ERROR_INVALID_EMPTY_FAVORITES_LIST_NAME": "Ungültiger leerer Name.",
         "OK": "OK"
     },
+    "GenericSubmodel": {
+        "ADD_TO_START": "Favorit",
+        "ADD_TO_START_TOOLTIP": "Als Favorit zur Startseite hinzufügen."
+    },
     "HandoverDocumentation": {
         "TITLE": "Übergabedocumentation",
         "EMPTY": "Keine Übergabedokumente verfügbar."
@@ -408,6 +412,9 @@
         "REMOVE_TOOLTIP": "Ausgewählte Kacheln löschen.",
         "MOVE_LEFT_TOOLTIP": "Ausgewählte Kacheln eine Position nach links schieben.",
         "MOVE_RIGHT_TOOLTIP": "Ausgewählte Kacheln eine Position nach rechts schieben."
+    },
+    "SubmodelTree": {
+        "SEARCH_PLACEHOLDER": "Nach Name filtern..."
     },
     "TechnicalData": {
         "TITLE": "Technische Daten"

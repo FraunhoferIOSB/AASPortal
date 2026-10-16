@@ -7,7 +7,7 @@
  *****************************************************************************/
 
 import { RouterLink } from '@angular/router';
-import { TranslateDirective } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { EMPTY, Observable } from 'rxjs';
 import { Component, computed, effect, inject, OnDestroy, TemplateRef, viewChild } from '@angular/core';
 
@@ -17,6 +17,8 @@ import { DocumentHeader } from '../../shared/components/document-header/document
 import { SubmodelTree } from '../../shared/components/submodel-tree/submodel-tree';
 import { LeafView } from '../leaf-view';
 import { VIEW_ROUTE_NAME } from '../view-route-name';
+import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
+import { FormsModule } from '@angular/forms';
 
 /**
  * Generic, read-only view of a single submodel — same searchable/collapsible tree (via
@@ -29,7 +31,7 @@ import { VIEW_ROUTE_NAME } from '../view-route-name';
     templateUrl: './generic-submodel-view.html',
     styleUrl: './generic-submodel-view.scss',
     providers: [{ provide: VIEW_ROUTE_NAME, useValue: 'GenericSubmodel' }],
-    imports: [DocumentHeader, TranslateDirective, RouterLink, SubmodelTree],
+    imports: [DocumentHeader, FormsModule, TranslateDirective, TranslatePipe, SubmodelTree, NgbTooltip],
 })
 export class GenericSubmodelView extends LeafView implements OnDestroy {
     private readonly toolbar = inject(ToolbarService);
