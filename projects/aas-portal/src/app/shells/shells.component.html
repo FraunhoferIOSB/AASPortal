@@ -90,7 +90,7 @@
         }
     </div>
 
-    @if (!someSelected()) {
+    @if (someSelected()) {
         <div class="fhg-hidden-selected-bar">
             <div
                 class="d-flex flex-row align-items-center px-3 bg-secondary-subtle me-2 my-1 border border-black border-opacity-25 rounded-3"
@@ -112,7 +112,6 @@
                     type="button"
                     class="btn text-primary bg-primary-subtle mx-2"
                     (click)="downloadPackages().subscribe()"
-                    [disabled]="someSelected() === false"
                     ngbTooltip="{{ 'Shells.DOWNLOAD_TOOLTIP' | translate }}"
                     placement="top"
                     [openDelay]="300"
@@ -124,7 +123,6 @@
                     type="button"
                     class="btn text-danger bg-danger-subtle"
                     (click)="deletePackages().subscribe()"
-                    [disabled]="someSelected() === false"
                     ngbTooltip="{{ 'Shells.DELETE_TOOLTIP' | translate }}"
                     placement="top"
                     [openDelay]="300"
@@ -136,7 +134,6 @@
                     class="btn text-primary bg-primary-subtle ms-2"
                     type="button"
                     (click)="addToStart().subscribe()"
-                    [disabled]="someSelected() === false"
                     ngbTooltip="{{ 'Shells.ADD_TO_START_TOOLTIP' | translate }}"
                     placement="top"
                     [openDelay]="300"
