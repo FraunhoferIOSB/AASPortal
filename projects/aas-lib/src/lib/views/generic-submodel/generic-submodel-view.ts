@@ -6,7 +6,6 @@
  *
  *****************************************************************************/
 
-import { RouterLink } from '@angular/router';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { EMPTY, Observable } from 'rxjs';
 import { Component, computed, effect, inject, OnDestroy, TemplateRef, viewChild } from '@angular/core';

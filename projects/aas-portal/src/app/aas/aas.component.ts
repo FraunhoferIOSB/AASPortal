@@ -28,7 +28,6 @@ import {
     findRouteForShell,
     findRouteForSubmodel,
     VIEW_ROUTES,
-    DashboardService,
     MaxLengthPipe,
     DocumentHeader,
 } from 'aas-lib';
