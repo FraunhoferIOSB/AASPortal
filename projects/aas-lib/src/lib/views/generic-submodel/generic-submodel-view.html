@@ -41,7 +41,7 @@
                     (ngModelChange)="submodelTree.setQuery($event)"
                 />
                 @let count = submodelTree.matchCount();
-                @if (count > 0) {
+                @if (count >= 0) {
                     <span class="fs-7 input-group-text">{{ count }} matches</span>
                 }
             </div>

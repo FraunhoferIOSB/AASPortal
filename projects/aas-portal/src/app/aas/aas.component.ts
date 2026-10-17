@@ -6,7 +6,7 @@
  *
  *****************************************************************************/
 
-import { NgClass } from '@angular/common';
+import { NgClass, NgTemplateOutlet } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
@@ -15,7 +15,7 @@ import { catchError, EMPTY, from, map, mergeMap, Observable, of, tap, first, com
 import { NgbModal, NgbNavModule, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { Component, OnDestroy, OnInit, TemplateRef, effect, inject, viewChild } from '@angular/core';
 
-import { aas, AASEndpointAuth } from 'aas-core';
+import { aas, AASEndpointAuth, getSemanticId } from 'aas-core';
 import {
     decodeBase64Url,
     NotifyService,
@@ -44,6 +44,7 @@ import { AASState } from './aas.state';
         TranslatePipe,
         FormsModule,
         NgClass,
+        NgTemplateOutlet,
         RouterModule,
         NgbNavModule,
         MaxLengthPipe,
@@ -68,7 +69,6 @@ export class AASComponent implements OnInit, OnDestroy {
     private readonly router = inject(Router);
     private readonly route = inject(ActivatedRoute);
     private readonly notify = inject(NotifyService);
-    private readonly dashboard = inject(DashboardService);
     private readonly api = inject(EndpointsApi);
     private readonly auth = inject(AuthService);
     private readonly modal = inject(NgbModal);
@@ -161,38 +161,8 @@ export class AASComponent implements OnInit, OnDestroy {
         );
     }
 
-    private getDocument(id: string, endpoint?: string): void {
-        this.api.getDocument('AssetAdministrationShell', id, endpoint).subscribe({
-            next: document => this.state.update({ document, error: null }),
-            error: error => {
-                // Without resetting `document` here, this AAS-independent, root-provided state
-                // would keep showing whichever shell was last successfully loaded, silently
-                // hiding the fact that loading *this* one just failed.
-                console.debug(error);
-                const status = error instanceof HttpErrorResponse ? error.status : undefined;
-                this.state.update({
-                    document: null,
-                    error: status === 401 || status === 403 ? 'permission' : 'other',
-                });
-            },
-        });
-    }
-
-    /** Reloads the AAS for the route's current params, e.g. after the user just added an API key. */
-    private retry(): void {
-        const routeParams = this.route.snapshot.params;
-        const params = routeParams.id || routeParams.docs ? routeParams : this.route.snapshot.queryParams;
-        if (!params.id) {
-            return;
-        }
-
-        this.getDocument(decodeBase64Url(params.id), params.endpoint ? decodeBase64Url(params.endpoint) : undefined);
-    }
-
     public getSubmodelSemanticId(submodel: aas.Submodel): string {
-        if (!submodel?.semanticId) return '';
-        if (submodel?.semanticId?.keys?.length <= 0) return '';
-        return submodel.semanticId.keys[0].value;
+        return getSemanticId(submodel) ?? 'N/D';
     }
 
     public getSubmodelIcon(submodel: aas.Submodel): string {
@@ -282,5 +252,33 @@ export class AASComponent implements OnInit, OnDestroy {
         }
 
         return [`/views/${route.path}`, params];
+    }
+
+    private getDocument(id: string, endpoint?: string): void {
+        this.api.getDocument('AssetAdministrationShell', id, endpoint).subscribe({
+            next: document => this.state.update({ document, error: null }),
+            error: error => {
+                // Without resetting `document` here, this AAS-independent, root-provided state
+                // would keep showing whichever shell was last successfully loaded, silently
+                // hiding the fact that loading *this* one just failed.
+                console.debug(error);
+                const status = error instanceof HttpErrorResponse ? error.status : undefined;
+                this.state.update({
+                    document: null,
+                    error: status === 401 || status === 403 ? 'permission' : 'other',
+                });
+            },
+        });
+    }
+
+    /** Reloads the AAS for the route's current params, e.g. after the user just added an API key. */
+    private retry(): void {
+        const routeParams = this.route.snapshot.params;
+        const params = routeParams.id || routeParams.docs ? routeParams : this.route.snapshot.queryParams;
+        if (!params.id) {
+            return;
+        }
+
+        this.getDocument(decodeBase64Url(params.id), params.endpoint ? decodeBase64Url(params.endpoint) : undefined);
     }
 }

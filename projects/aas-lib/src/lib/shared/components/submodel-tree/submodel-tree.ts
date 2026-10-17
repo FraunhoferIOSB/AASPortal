@@ -86,7 +86,7 @@ export type SubmodelTreeGroup = {
     selector: 'fhg-submodel-tree',
     templateUrl: './submodel-tree.html',
     styleUrl: './submodel-tree.scss',
-    imports: [FormsModule, NgTemplateOutlet],
+    imports: [FormsModule, NgTemplateOutlet, TranslatePipe],
 })
 export class SubmodelTree implements OnDestroy {
     private readonly translate = inject(TranslateService);
@@ -137,12 +137,21 @@ export class SubmodelTree implements OnDestroy {
      */
     public readonly live = input<boolean>(true);
 
+    public readonly showAbbreviation = input(false);
+
+    public readonly showDescription = input(false);
+
+    public readonly showSearch = input(false);
+
     public readonly expanded = signal<ReadonlySet<string>>(new Set());
 
-    /** The committed search term that actually filters the tree -- see {@link queryDraft}. */
     public readonly query = signal('');
 
     private readonly debouncedQuery = debounced(this.query, 300);
+
+    private readonly searchText = computed(() =>
+        this.debouncedQuery.hasValue() ? this.debouncedQuery.value().trim().toLocaleLowerCase() : '',
+    );
 
     private readonly currentLang = computed(() => this.translate.currentLang() ?? 'en-us');
 
@@ -176,8 +185,7 @@ export class SubmodelTree implements OnDestroy {
     }
 
     public isExpanded(path: string): boolean {
-        const query = this.query().trim();
-        if (query.length > 0) {
+        if (this.searchText().length > 0) {
             // Force-expanding every matched group is convenient for a normal search result, but the
             // matched set can itself still be large enough to reproduce the same render blowup the
             // default-collapsed fix above prevents (e.g. searching a common term against a huge tree).
@@ -201,9 +209,11 @@ export class SubmodelTree implements OnDestroy {
         return this.filtered().itemsByPath.get(path) ?? [];
     }
 
-    public matchCount = computed(() =>
-        [...this.filtered().itemsByPath.values()].reduce((n, items) => n + items.length, 0),
-    );
+    public matchCount = computed(() => {
+        return this.searchText().length > 0
+            ? [...this.filtered().itemsByPath.values()].reduce((n, items) => n + items.length, 0)
+            : -1;
+    });
 
     public ngOnDestroy(): void {
         this.webSocketSubscription?.unsubscribe();
@@ -214,18 +224,20 @@ export class SubmodelTree implements OnDestroy {
     }
 
     private readonly filtered = computed(() => {
-        const query = this.debouncedQuery.hasValue() ? this.debouncedQuery.value().trim().toLocaleLowerCase() : '';
+        const searchText = this.searchText();
         const visible = new Set<string>();
         const itemsByPath = new Map<string, SubmodelTreeItem[]>();
 
         for (const group of this.groups()) {
-            const nameHit = query.length > 0 && group.name.toLowerCase().includes(query);
+            const nameHit = searchText.length > 0 && group.name.toLowerCase().includes(searchText);
             const items =
-                !query || nameHit ? group.items : group.items.filter(i => i.name.toLowerCase().includes(query));
+                !searchText || nameHit
+                    ? group.items
+                    : group.items.filter(i => i.name.toLowerCase().includes(searchText));
 
             itemsByPath.set(group.path, items);
 
-            if (!query || items.length > 0 || nameHit) {
+            if (!searchText || items.length > 0 || nameHit) {
                 const parts = group.path.split('/');
                 for (let i = 1; i <= parts.length; i++) {
                     visible.add(parts.slice(0, i).join('/'));
