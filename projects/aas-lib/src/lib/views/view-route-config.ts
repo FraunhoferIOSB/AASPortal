@@ -96,9 +96,7 @@ export const viewRoutes: ViewRoute[] = [
         },
     },
     {
-        // Fallback for a submodel that matches no Leaf route above — see findRouteForSubmodel
-        // in utilities.ts and RouteData['DefaultSubmodel'] in types.ts.
-        path: 'GenericSubmodel',
+        path: 'generic-submodel',
         component: GenericSubmodelView,
         data: {
             type: 'DefaultSubmodel',
@@ -153,7 +151,7 @@ export const viewRoutes: ViewRoute[] = [
         },
     },
     {
-        path: 'SensorMeasurementValue',
+        path: 'sensor-measurement-value',
         component: SensorMeasurementValueView,
         data: {
             type: 'Leaf',

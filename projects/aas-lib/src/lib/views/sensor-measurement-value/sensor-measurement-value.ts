@@ -11,8 +11,8 @@ import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-transl
 import { Subscription } from 'rxjs';
 import { aas, AASDocument, convertToString, LiveNode, LiveRequest, WebSocketData } from 'aas-core';
 
-import { WebSocketService } from '../../services/web-socket.service';
 import { MeasurementValueData, validateSensorMeasurementValue } from './sensor-measurement-value-validator';
+import { WebSocketService } from '../../shared/services/web-socket.service';
 
 @Component({
     selector: 'fhg-sensor-measurement-value',
