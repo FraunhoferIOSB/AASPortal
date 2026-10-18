@@ -150,7 +150,7 @@
         "TYPE": "Type"
     },
     "DocumentBrowser": {
-        "ADD_TO_START_TOOLTIP": "Fügt eine Verknüpfung zur Startseite hinzu.",
+        "ADD_TO_START_TOOLTIP": "Als Favorit zur Startseite hinzufügen.",
         "CAPTION": "Browser"
     },
     "DocumentContent": {
@@ -371,6 +371,24 @@
     "ServiceRequestNotification": {
         "TITLE": "Serviceanfrage"
     },
+    "SensorMeasurementValue": {
+        "ADD_TO_START": "Favorit",
+        "ADD_TO_START_TOOLTIP": "Als Favorit zur Startseite hinzufügen.",
+        "TITLE": "Sensor-Messwert",
+        "VALUE": "Wert",
+        "TIMESTAMP": "Messzeitpunkt",
+        "PREDEFINED_VALUE": "Vordefinierter Wert",
+        "QUALITY": "Qualität",
+        "RANGE": "Bereich",
+        "SCALE": "Skalierung",
+        "TAG": "Kennzeichnung",
+        "ORIGIN": "Ursprung",
+        "VERSION": "Version",
+        "IDENTIFIER": "Bezeichner",
+        "LIVE": "Live-Wert",
+        "EXTENSIONS": "Zusätzliche Elemente",
+        "INVALID_TEMPLATE": "Das Messwert-Teilmodell entspricht nicht IDTA 02029-1 v1.0."
+    },
     "Settings": {
         "ADD_ENDPOINT": "Endpunkt hinzufügen...",
         "ENDPOINT_INDEX": "Endpunkt-Index...",
@@ -399,6 +417,7 @@
         "OperationalData": "Operative Daten",
         "PLACEHOLDER_FILTER": "Filter",
         "ServiceRequestNotification": "Serviceanfrage",
+        "SensorMeasurementValue": "Sensor-Messwert",
         "TechnicalData": "Technische Daten",
         "UPLOAD": "Hochladen",
         "UPLOAD_TOOLTIP": "AASX-Package-Datei zu einem AAS-Endpunkt hochladen.",
