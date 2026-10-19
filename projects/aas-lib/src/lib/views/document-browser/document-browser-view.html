@@ -7,8 +7,10 @@
  !---------------------------------------------------------------------------->
 
 @if (count() > 0) {
-    <div class="container container-md container-lg h-100">
-        <fhg-doc-header [document]="document()"></fhg-doc-header>
+    <div class="h-100">
+        <div class="mb-3">
+            <fhg-doc-header [document]="document()"></fhg-doc-header>
+        </div>
         <fhg-browser
             [env]="content()"
             [endpoint]="$safeNavigationMigration(document()?.endpoint)"
@@ -20,23 +22,23 @@
 }
 
 <ng-template #browserToolbar>
-    <div class="w-100 d-none d-sm-block">
-        <div class="mb-1 d-none d-lg-flex flex-row">
-            <h2 translate="DocumentBrowser.CAPTION"></h2>
-        </div>
-
+    <div class="w-100">
+        <h2 translate="DocumentBrowser.CAPTION"></h2>
         <div class="input-group me-2 my-1">
-                <button
-                    class="btn btn-outline-primary my-1"
-                    type="button"
-                    (click)="addToStart().subscribe()"
-                    ngbTooltip="{{ 'DocumentBrowser.ADD_TO_START_TOOLTIP' | translate }}"
-                    placement="bottom"
-                    [openDelay]="300"
-                    [closeDelay]="500"
-                >
-                    <i class="bi bi-house-add"></i>
-                </button>
+            <button
+                class="btn btn-outline-primary my-1"
+                type="button"
+                (click)="addToStart().subscribe()"
+                ngbTooltip="{{ 'DocumentBrowser.ADD_TO_START_TOOLTIP' | translate }}"
+                placement="bottom"
+                [openDelay]="300"
+                [closeDelay]="500"
+            >
+                <i class="bi bi-house-add"></i>
+                <div class="d-inline px-2">
+                    <span translate="DocumentBrowser.ADD_TO_START"></span>
+                </div>
+            </button>
         </div>
         @if (count() >= 2) {
             <div class="input-group my-1">

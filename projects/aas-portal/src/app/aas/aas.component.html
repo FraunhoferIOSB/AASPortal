@@ -42,55 +42,39 @@
 
 <!-- Toolbar -->
 <ng-template #toolbar>
-    <div class="w-100 d-none d-sm-block">
-        <h2 class="mb-1" translate="AAS.CAPTION"></h2>
-        <div class="d-flex flex-row">
-            <div class="button-group me-2 my-1">
-                <button
-                    class="btn btn-outline-primary my-1"
-                    type="button"
-                    (click)="addToStart().subscribe()"
-                    ngbTooltip="{{ 'AAS.ADD_TO_START_TOOLTIP' | translate }}"
-                    placement="bottom"
-                    [openDelay]="300"
-                    [closeDelay]="500"
-                >
-                    <i class="bi bi-house-add"></i>
-                    <div class="d-none d-lg-inline px-2">
-                        <span translate="AAS.ADD_TO_START"></span>
-                    </div>
-                </button>
-            </div>
-            <div class="button-group ms-auto me-2 my-1">
-                <button
-                    [routerLink]="openContentView()"
-                    type="button"
-                    class="btn btn-outline-primary me-2 my-1"
-                    ngbTooltip="{{ 'AAS.OPEN_CONTENT_VIEW_TOOLTIP' | translate }}"
-                    placement="bottom"
-                    [openDelay]="300"
-                    [closeDelay]="500"
-                >
-                    <i class="bi bi-diagram-3"></i>
-                    <div class="d-none d-lg-inline px-2">
-                        <span translate="AAS.OPEN_CONTENT_VIEW"></span>
-                    </div>
-                </button>
-                <button
-                    [routerLink]="openBrowserView()"
-                    type="button"
-                    class="btn btn-outline-primary my-1"
-                    ngbTooltip="{{ 'AAS.OPEN_BROWSER_VIEW_TOOLTIP' | translate }}"
-                    placement="bottom"
-                    [openDelay]="300"
-                    [closeDelay]="500"
-                >
-                    <i class="bi bi-box-arrow-in-down"></i>
-                    <div class="d-none d-lg-inline px-2">
-                        <span translate="AAS.OPEN_BROWSER_VIEW"></span>
-                    </div>
-                </button>
-            </div>
+    <div class="w-100">
+        <div class="row">
+            <h2 class="col" translate="AAS.CAPTION"></h2>
+            <button
+                class="btn btn-outline-primary border-0 col-auto me-2"
+                type="button"
+                (click)="addToStart().subscribe()"
+                ngbTooltip="{{ 'AAS.ADD_TO_START_TOOLTIP' | translate }}"
+                placement="bottom"
+                container="body"
+                [openDelay]="300"
+                [closeDelay]="500"
+            >
+                <i class="bi bi-house-add"></i>
+                <div class="d-none d-lg-inline px-2">
+                    <span translate="AAS.ADD_TO_START"></span>
+                </div>
+            </button>
+            <button
+                [routerLink]="openBrowserView()"
+                type="button"
+                class="btn btn-outline-primary border-0 col-auto"
+                ngbTooltip="{{ 'AAS.OPEN_BROWSER_VIEW_TOOLTIP' | translate }}"
+                placement="bottom"
+                container="body"
+                [openDelay]="300"
+                [closeDelay]="500"
+            >
+                <i class="bi bi-box-arrow-in-down"></i>
+                <div class="d-none d-lg-inline px-2">
+                    <span translate="AAS.OPEN_BROWSER_VIEW"></span>
+                </div>
+            </button>
         </div>
     </div>
 </ng-template>

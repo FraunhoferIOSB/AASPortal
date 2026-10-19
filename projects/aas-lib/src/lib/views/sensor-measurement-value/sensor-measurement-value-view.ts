@@ -24,7 +24,7 @@ import { encodeBase64Url } from '../../utilities';
     selector: 'fhg-sensor-measurement-value-view',
     templateUrl: './sensor-measurement-value-view.html',
     styleUrl: './sensor-measurement-value-view.scss',
-    providers: [{ provide: VIEW_ROUTE_NAME, useValue: 'SensorMeasurementValue' }],
+    providers: [{ provide: VIEW_ROUTE_NAME, useValue: 'sensor-measurement-value' }],
     imports: [
         RouterModule,
         TranslateDirective,

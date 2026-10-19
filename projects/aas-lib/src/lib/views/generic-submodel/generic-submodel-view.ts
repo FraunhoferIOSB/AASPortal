@@ -30,7 +30,7 @@ import { StartService } from '../../shared/services/start.service';
     selector: 'fhg-generic-submodel-view',
     templateUrl: './generic-submodel-view.html',
     styleUrl: './generic-submodel-view.scss',
-    providers: [{ provide: VIEW_ROUTE_NAME, useValue: 'GenericSubmodel' }],
+    providers: [{ provide: VIEW_ROUTE_NAME, useValue: 'generic-submodel' }],
     imports: [DocumentHeader, FormsModule, TranslateDirective, TranslatePipe, SubmodelTree, NgbTooltip],
 })
 export class GenericSubmodelView extends LeafView implements OnDestroy {

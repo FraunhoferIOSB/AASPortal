@@ -6,37 +6,32 @@
  !
  !---------------------------------------------------------------------------->
 
-<div class="container h-100">
-    <div class="d-flex flex-column mt-2">
-        <div class="d-flex flex-column flex-sm-row">
-            <div class="d-flex flex-column data-entry">
-                <h3 translate="Nameplate.TITLE"></h3>
-            </div>
-
-            <div class="mt-1 mx-4 d-flex flex-row ms-sm-auto">
-                <button
-                    [routerLink]="openAASOverview()"
-                    type="button"
-                    class="btn btn-outline-primary rounded-5 px-3"
-                    style="width: fit-content"
-                >
-                    <span class="me-2" translate="AAS.OVERVIEW"></span>
-                    <i class="bi bi-box-arrow-up-right"></i>
-                </button>
-            </div>
-        </div>
-        <fhg-doc-header [document]="document()"></fhg-doc-header>
-    </div>
-
+<div class="h-100">
+    <fhg-doc-header [document]="document()"></fhg-doc-header>
     <fhg-nameplate [document]="document()" [state]="nameplateState"></fhg-nameplate>
 </div>
 
-<ng-template #nameplateToolbar>
-    <div class="input-group me-2 my-1">
-        <button class="btn btn-outline-primary" type="button" (click)="addToStart().subscribe()">
-            Add to Start
-            <i class="bi bi-house-add"></i>
-        </button>
+<ng-template #toolbar>
+    <div class="d-block">
+        <h2 translate="Nameplate.TITLE"></h2>
+        <div class="d-node d-sm-flex flex-row">
+            <div class="me-2 my-1">
+                <button
+                    class="btn btn-outline-primary"
+                    type="button"
+                    (click)="addToStart().subscribe()"
+                    ngbTooltip="{{ 'Nameplate.ADD_TO_START_TOOLTIP' | translate }}"
+                    placement="bottom"
+                    [openDelay]="300"
+                    [closeDelay]="500"
+                >
+                    <i class="bi bi-house-add"></i>
+                    <div class="d-none d-lg-inline px-2">
+                        <span translate="Nameplate.ADD_TO_START"></span>
+                    </div>
+                </button>
+            </div>
+        </div>
     </div>
     @if (count() >= 2) {
         <div class="input-group my-1">

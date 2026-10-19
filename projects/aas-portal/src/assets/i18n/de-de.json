@@ -150,6 +150,7 @@
         "TYPE": "Type"
     },
     "DocumentBrowser": {
+        "ADD_TO_START": "Favorit",
         "ADD_TO_START_TOOLTIP": "Als Favorit zur Startseite hinzufügen.",
         "CAPTION": "Browser"
     },
@@ -297,6 +298,8 @@
         "VIEW": "Sicht"
     },
     "Nameplate": {
+        "ADD_TO_START": "Favorit",
+        "ADD_TO_START_TOOLTIP": "Als Favorit zur Startseite hinzufügen.",
         "GENERAL": "Allgemein",
         "TITLE": "Digitales Typenschild",
         "SERIAL_NUMBER": "Seriennummer",

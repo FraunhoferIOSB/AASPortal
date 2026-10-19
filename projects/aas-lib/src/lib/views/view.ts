@@ -20,7 +20,7 @@ import { TranslateService } from '@ngx-translate/core';
 /**
  * Provides a specific view component.
  */
-@Component({ selector: 'awp-view', template: '' })
+@Component({ selector: 'fhg-view', template: '' })
 export abstract class View {
     protected readonly route = inject(ActivatedRoute);
     protected readonly api = inject(EndpointsApi);

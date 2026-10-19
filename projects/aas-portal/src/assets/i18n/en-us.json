@@ -165,7 +165,8 @@
         "FIND_PREVIOUS_TOOLTIP": "Go to the previous match."
     },
     "DocumentBrowser": {
-        "ADD_TO_START_TOOLTIP": "Add a short-cut to the start page.",
+        "ADD_TO_START": "Favorite",
+        "ADD_TO_START_TOOLTIP": "Add as a favorite to the start page.",
         "CAPTION": "Browser"
     },
     "DocumentHeader": {
@@ -303,6 +304,8 @@
         "VIEW": "View"
     },
     "Nameplate": {
+        "ADD_TO_START": "Favorite",
+        "ADD_TO_START_TOOLTIP": "Add as a favorite to the start page.",
         "GENERAL": "General",
         "TITLE": "Digital Namplate",
         "SERIAL_NUMBER": "Serialnumber",

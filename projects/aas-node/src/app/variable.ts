@@ -44,7 +44,7 @@ export class Variable {
     /** The URLs of the initial AAS container endpoints. */
     public readonly ENDPOINTS: string[] = process.env.ENDPOINTS
         ? JSON.parse(process.env.ENDPOINTS)
-        : ['file:///endpoints/samples?name=Samples'];
+        : ['file:///endpoints/samples?name=Samples', 'file:///endpoints/templates?name=Templates'];
 
     /** The certificate file if AASNode supports HTTPS. */
     public readonly HTTPS_CERT_FILE?: string = process.env.HTTPS_CERT_FILE;
