@@ -6,7 +6,6 @@
  *
  *****************************************************************************/
 
-import { RouterLink } from '@angular/router';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { EMPTY, Observable } from 'rxjs';
 import { Component, effect, inject, OnDestroy, TemplateRef, viewChild } from '@angular/core';
@@ -49,7 +48,7 @@ export class OperationalDataView extends LeafView implements OnDestroy {
     }
 
     public addToStart(): Observable<void> {
-       const document = this.document();
+        const document = this.document();
         if (
             document &&
             this.start.add('Favorite', `OPD#${document.endpoint}#${document.id}`, {
