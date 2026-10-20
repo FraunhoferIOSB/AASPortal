@@ -9,6 +9,7 @@
 import { describe, beforeEach, it, expect, afterEach, Mocked, vitest } from 'vitest';
 import { WebDAVStorage } from './webdav-storage.js';
 import { FileStat, WebDAVClient } from 'webdav';
+import { PassThrough } from 'stream';
 import { createSpyObj } from '../../test/mocks.js';
 
 describe('WebDAVStorage', () => {
@@ -16,7 +17,7 @@ describe('WebDAVStorage', () => {
     let client: Mocked<WebDAVClient>;
 
     beforeEach(() => {
-        client = createSpyObj<WebDAVClient>(['exists', 'getDirectoryContents', 'getFileContents']);
+        client = createSpyObj<WebDAVClient>(['exists', 'getDirectoryContents', 'getFileContents', 'createReadStream']);
         storage = new WebDAVStorage('webdav://localhost:1234/', client);
     });
 
@@ -69,6 +70,25 @@ describe('WebDAVStorage', () => {
             const buffer = await storage.readFile('./a/file.txt');
             expect(buffer.toString()).toEqual('Hello world!');
             expect(client.getFileContents).toHaveBeenCalledWith('/a/file.txt');
+        });
+    });
+
+    describe('createReadStream', () => {
+        it('returns a Node.js readable stream for the remote file', async () => {
+            const source = new PassThrough();
+            client.createReadStream.mockReturnValue(source);
+
+            const stream = storage.createReadStream('./a/file.txt');
+            const contents = await new Promise<Buffer>((resolve, reject) => {
+                const chunks: Buffer[] = [];
+                stream.on('data', chunk => chunks.push(Buffer.from(chunk)));
+                stream.on('end', () => resolve(Buffer.concat(chunks)));
+                stream.on('error', reject);
+                source.end('Hello world!');
+            });
+
+            expect(contents.toString()).toEqual('Hello world!');
+            expect(client.createReadStream).toHaveBeenCalledWith('/a/file.txt');
         });
     });
 });
