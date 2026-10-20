@@ -6,8 +6,8 @@
  *
  *****************************************************************************/
 
-import { TranslateDirective } from '@ngx-translate/core';
-import { NgbAccordionModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { NgbAccordionModule, NgbPaginationModule, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { RouterModule } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { Component, effect, inject, OnDestroy, TemplateRef, viewChild } from '@angular/core';
@@ -31,7 +31,16 @@ import { VIEW_ROUTE_NAME } from '../view-route-name';
     templateUrl: './nameplate-view.html',
     styleUrls: ['./nameplate-view.scss'],
     providers: [{ provide: VIEW_ROUTE_NAME, useValue: 'Nameplate' }],
-    imports: [TranslateDirective, NgbPaginationModule, NgbAccordionModule, DocumentHeader, Nameplate, RouterModule],
+    imports: [
+        TranslateDirective,
+        TranslatePipe,
+        NgbPaginationModule,
+        NgbAccordionModule,
+        DocumentHeader,
+        Nameplate,
+        RouterModule,
+        NgbTooltip,
+    ],
 })
 export class NameplateView extends LeafView implements OnDestroy {
     private readonly toolbar = inject(ToolbarService);
@@ -52,7 +61,7 @@ export class NameplateView extends LeafView implements OnDestroy {
     /**
      * A `TemplateRef` for the nameplate toolbar. It is used to set the toolbar content.
      */
-    public readonly toolbarTemplate = viewChild<TemplateRef<unknown>>('nameplateToolbar');
+    public readonly toolbarTemplate = viewChild<TemplateRef<unknown>>('toolbar');
 
     /**
      * The state of the nameplate child component.

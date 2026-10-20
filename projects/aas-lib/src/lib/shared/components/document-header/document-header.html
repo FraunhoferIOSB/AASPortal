@@ -6,7 +6,7 @@
  !
  !---------------------------------------------------------------------------->
 
-<div class="d-flex flex-column border border-1 border-black border-opacity-50 rounded-3 m-2">
+<div class="d-flex flex-column border border-1 border-black border-opacity-50 rounded-3">
     <div class="p-2">
         <h3>{{ idShort() }}</h3>
     </div>
@@ -24,9 +24,9 @@
             <label class="text-body-tertiary" translate="DocumentHeader.VERSION"></label>
             <div class="ms-3">{{ version() }}</div>
             <label class="text-body-tertiary" translate="DocumentHeader.AAS_ID"></label>
-            <div class="ms-3">{{ id() }}</div>
+            <div class="ms-3 text-nowrap text-truncate">{{ id() }}</div>
             <label class="text-body-tertiary" translate="DocumentHeader.ASSET_ID"></label>
-            <div class="ms-3">{{ assetId() }}</div>
+            <div class="ms-3 text-nowrap text-truncate">{{ assetId() }}</div>
         </div>
         <div class="d-none d-lg-block">
             <canvas class="qrCode" #qrCode></canvas>

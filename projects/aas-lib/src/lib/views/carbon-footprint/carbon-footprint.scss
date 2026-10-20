@@ -11,10 +11,6 @@
     font-size: 32px;
  }
 
- .pcf-unit {
-
- }
-
 // Both boxes used to be `width: fit-content` (sized to their own content) inside a plain
 // flex row. flex-grow ratios with a zero basis give an exact 1/3 : 2/3 split driven purely
 // by the ratio — not by each box's own content width — so it holds at any container width.

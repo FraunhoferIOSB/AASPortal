@@ -25,7 +25,8 @@
         "INFO_NO_SHELLS_AVAILABLE": "No Asset Administration Shells available."
     },
     "About": {
-        "ADD_TO_START_TOOLTIP": "Add a short-cut to the start page.",
+        "ADD_TO_START": "Favorite",
+        "ADD_TO_START_TOOLTIP": "Add as a favorite to the start page.",
         "CAPTION": "About",
         "NUMBER_OF_ENDPOINTS": "Endpoints",
         "NUMBER_OF_SHELLS": "Shells",
@@ -91,6 +92,8 @@
         "TITLE": "AAS browser"
     },
     "CarbonFootprint": {
+        "ADD_TO_START": "Favorite",
+        "ADD_TO_START_TOOLTIP": "Add as a favorite to the start page.",
         "TITLE": "Carbon Footprint",
         "CARBON_FOOTPRINT_DATA": "Carbon footprint",
         "CARBON_FOOTPRINT": "Carbon footprints",
@@ -111,6 +114,8 @@
         "YES": "Yes"
     },
     "ContactInformation": {
+        "ADD_TO_START": "Favorite",
+        "ADD_TO_START_TOOLTIP": "Add as a favorite to the start page.",
         "TITLE": "Contact Information"
     },
     "CustomerFeedback": {
@@ -153,6 +158,7 @@
         "TYPE": "Type"
     },
     "DocumentContent": {
+        "ADD_TO_START": "Favorite",
         "ADD_TO_START_TOOLTIP": "Add as a favorite to the start page.",
         "CAPTION": "Structure",
         "EMPTY": "No AAS document available.",
@@ -165,7 +171,8 @@
         "FIND_PREVIOUS_TOOLTIP": "Go to the previous match."
     },
     "DocumentBrowser": {
-        "ADD_TO_START_TOOLTIP": "Add a short-cut to the start page.",
+        "ADD_TO_START": "Favorite",
+        "ADD_TO_START_TOOLTIP": "Add as a favorite to the start page.",
         "CAPTION": "Browser"
     },
     "DocumentHeader": {
@@ -247,6 +254,11 @@
         "ADD_FAVORITE": "Add 1 AAS document. {{count}} favorites",
         "ADD_FAVORITES": "Add {{length}} AAS document. {{count}} favorites"
     },
+    "GenericSubmodel": {
+        "ADD_TO_START": "Favorite",
+        "ADD_TO_START_TOOLTIP": "Add as a favorite to the start page.",
+        "SEARCH_PLACEHOLDER": "Filter by name..."
+    },
     "HandoverDocumentation": {
         "TITLE": "Handover Documentation",
         "EMPTY": "No handover documents available."
@@ -299,6 +311,8 @@
         "VIEW": "View"
     },
     "Nameplate": {
+        "ADD_TO_START": "Favorite",
+        "ADD_TO_START_TOOLTIP": "Add as a favorite to the start page.",
         "GENERAL": "General",
         "TITLE": "Digital Namplate",
         "SERIAL_NUMBER": "Serialnumber",
@@ -315,6 +329,8 @@
         "WARNING": "Warning"
     },
     "OperationalData": {
+        "ADD_TO_START": "Favorite",
+        "ADD_TO_START_TOOLTIP": "Add as a favorite to the start page.",
         "TITLE": "Operational Data"
     },
     "ProfileForm": {
@@ -373,6 +389,24 @@
     "ServiceRequestNotification": {
         "TITLE": "Service Request Notification"
     },
+    "SensorMeasurementValue": {
+        "ADD_TO_START": "Favorite",
+        "ADD_TO_START_TOOLTIP": "Add as a favorite to the start page.",
+        "TITLE": "Sensor Measurement Value",
+        "VALUE": "Value",
+        "TIMESTAMP": "Measurement timestamp",
+        "PREDEFINED_VALUE": "Predefined value",
+        "QUALITY": "Quality",
+        "RANGE": "Range",
+        "SCALE": "Scale",
+        "TAG": "Tag",
+        "ORIGIN": "Origin",
+        "VERSION": "Version",
+        "IDENTIFIER": "Identifier",
+        "LIVE": "Live value",
+        "EXTENSIONS": "Additional elements",
+        "INVALID_TEMPLATE": "The Measurement Value submodel does not conform to IDTA 02029-1 v1.0."
+    },
     "Settings": {
         "ADD_ENDPOINT": "Add Endpoint...",
         "ENDPOINT_INDEX": "Endpoint Index...",
@@ -401,11 +435,15 @@
         "OperationalData": "Operational data",
         "PLACEHOLDER_FILTER": "Filter",
         "ServiceRequestNotification": "Service request notification",
+        "SensorMeasurementValue": "Sensor measurement value",
         "TechnicalData": "Technical data",
         "UPLOAD": "Upload",
         "UPLOAD_TOOLTIP": "Upload AASX package file to an AAS Endpoint.",
         "FAVORITES_TOOLTIP": "Manage favorites.",
         "VISIBLE_ENDPOINTS_TOOLTIP": "Select visible AAS endpoints."
+    },
+    "SubmodelTree": {
+        "SEARCH_PLACEHOLDER": "Filter by name..."
     },
     "Start": {
         "CAPTION": "Start",

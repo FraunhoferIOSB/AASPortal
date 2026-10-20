@@ -6,7 +6,7 @@
  *
  *****************************************************************************/
 
-import { beforeEach, describe, expect, it, vitest } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Component, DOCUMENT, effect, inject, Injectable, provideZonelessChangeDetection, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideTranslateService, TranslateLoader } from '@ngx-translate/core';
@@ -14,6 +14,7 @@ import { provideTranslateService, TranslateLoader } from '@ngx-translate/core';
 import { noop } from 'aas-core';
 import { FakeLoader } from '../../../../test/mocks';
 import { TreeComponent, TreeId, TreeNode, TreeResult } from './tree.component';
+import { afterEach } from 'node:test';
 
 function createComposite(id: string, parent: string | null): TreeNode {
     return {
@@ -153,6 +154,10 @@ describe('TreeComponent', () => {
         treeSearch = TestBed.inject(TreeSearch);
     });
 
+    afterEach(() => {
+        vi.useRealTimers();
+    });
+
     it('should create', () => {
         expect(component).toBeTruthy();
         expect(component.expanded()).toBe(false);
@@ -194,17 +199,16 @@ describe('TreeComponent', () => {
     });
 
     it('should highlight "A.2.3.1"', () => {
-        vitest.useFakeTimers();
+        vi.useFakeTimers();
         const document = TestBed.inject(DOCUMENT);
-        vitest.spyOn(document, 'getElementById');
+        vi.spyOn(document, 'getElementById');
         treeSearch.matchIndex.set(10);
         fixture.detectChanges();
-        vitest.runAllTimers();
+        vi.runAllTimers();
         expect(component.nodes()[6].name).toBe('A.2.3.1');
         expect(component.nodes()[6].highlighted).toBe(true);
         expect(component.highlighted()?.name).toBe('A.2.3.1');
         expect(document.getElementById).toHaveBeenCalledWith('A.2.3.1');
-        vitest.useRealTimers();
     });
 
     it('should select/deselect all node', () => {

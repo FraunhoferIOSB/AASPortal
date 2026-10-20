@@ -15,7 +15,10 @@ describe.skip('OperationalDataViewState', () => {
     let service: OperationalDataViewState;
 
     beforeEach(() => {
-        TestBed.configureTestingModule({});
+        TestBed.configureTestingModule({
+            providers: [OperationalDataViewState],
+        });
+
         service = TestBed.inject(OperationalDataViewState);
     });
 

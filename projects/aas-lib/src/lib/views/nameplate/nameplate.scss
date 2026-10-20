@@ -5,26 +5,3 @@
  * zur Foerderung der angewandten Forschung e.V.
  *
  *****************************************************************************/
-
- .label {
-    font-size: 14px;
-    color: var(--bs-gray-600)
- }
-
- .data-entry {
-    margin-top: 10px;
-    margin-bottom: 4px;
- }
-
-.image-container img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* keeps aspect ratio while covering container */
-}
-
-.logo {
-   max-height: 100px;
-   max-width: 100%;
-   height: auto;
-   width: auto;
-}

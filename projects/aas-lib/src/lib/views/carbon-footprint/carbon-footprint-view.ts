@@ -6,8 +6,8 @@
  *
  *****************************************************************************/
 
-import { TranslateDirective } from '@ngx-translate/core';
-import { NgbAccordionModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { NgbAccordionModule, NgbPaginationModule, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { RouterModule } from '@angular/router';
 import { of, Observable } from 'rxjs';
 import { Component, effect, inject, OnDestroy, TemplateRef, viewChild } from '@angular/core';
@@ -29,11 +29,13 @@ import { VIEW_ROUTE_NAME } from '../view-route-name';
     providers: [{ provide: VIEW_ROUTE_NAME, useValue: 'CarbonFootprint' }],
     imports: [
         TranslateDirective,
+        TranslatePipe,
         NgbPaginationModule,
         NgbAccordionModule,
         DocumentHeader,
         CarbonFootprint,
         RouterModule,
+        NgbTooltip,
     ],
     templateUrl: './carbon-footprint-view.html',
     styleUrl: './carbon-footprint-view.scss',

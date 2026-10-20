@@ -125,13 +125,14 @@ export type ViewRouteName =
     | 'content'
     | 'CustomerFeedback'
     | 'DigitalProductPassport'
-    | 'GenericSubmodel'
+    | 'generic-submodel'
     | 'HandoverDocumentation'
     | 'HierarchicalStructure'
     | 'Nameplate'
-    | 'OperationalData'
+    | 'operational-data'
     | 'Laser'
     | 'ServiceRequestNotification'
+    | 'sensor-measurement-value'
     | 'TechnicalData';
 
 export type ViewRouteMap = Partial<Record<ViewRouteName, aas.Submodel>>;

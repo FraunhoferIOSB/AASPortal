@@ -6,47 +6,47 @@
  !
  !---------------------------------------------------------------------------->
 
-<div class="container h-100">
-    <div class="d-flex flex-column mt-2">
-        <div class="d-flex flex-column flex-sm-row">
-            <div class="d-flex flex-column data-entry">
-                <h3 translate="Nameplate.TITLE"></h3>
-            </div>
-
-            <div class="mt-1 mx-4 d-flex flex-row ms-sm-auto">
-                <button
-                    [routerLink]="openAASOverview()"
-                    type="button"
-                    class="btn btn-outline-primary rounded-5 px-3"
-                    style="width: fit-content"
-                >
-                    <span class="me-2" translate="AAS.OVERVIEW"></span>
-                    <i class="bi bi-box-arrow-up-right"></i>
-                </button>
-            </div>
-        </div>
+<div>
+    <div class="mt-1">
         <fhg-doc-header [document]="document()"></fhg-doc-header>
     </div>
-
-    <fhg-nameplate [document]="document()" [state]="nameplateState"></fhg-nameplate>
+    <div class="mt-3">
+        <fhg-nameplate [document]="document()" [state]="nameplateState"></fhg-nameplate>
+    </div>
 </div>
 
-<ng-template #nameplateToolbar>
-    <div class="input-group me-2 my-1">
-        <button class="btn btn-outline-primary" type="button" (click)="addToStart().subscribe()">
-            Add to Start
-            <i class="bi bi-house-add"></i>
-        </button>
-    </div>
-    @if (count() >= 2) {
-        <div class="input-group my-1">
-            <ngb-pagination
-                [collectionSize]="count()"
-                [(page)]="index"
-                [pageSize]="1"
-                [directionLinks]="count() > 5"
-                [ellipses]="true"
-            />
+<ng-template #toolbar>
+    <div class="w-100">
+        <div class="row mb-1">
+            <h2 class="col" translate="Nameplate.TITLE"></h2>
+            <button
+                class="btn btn-outline-primary border-0 col-auto"
+                type="button"
+                (click)="addToStart().subscribe()"
+                ngbTooltip="{{ 'Nameplate.ADD_TO_START_TOOLTIP' | translate }}"
+                placement="bottom"
+                container="body"
+                [openDelay]="300"
+                [closeDelay]="500"
+            >
+                <i class="bi bi-house-add"></i>
+                <div class="d-none d-lg-inline px-2">
+                    <span translate="Nameplate.ADD_TO_START"></span>
+                </div>
+            </button>
         </div>
-    }
+        @if (count() >= 2) {
+            <div class="row mb-1">
+                <div class="col">
+                    <ngb-pagination
+                        [collectionSize]="count()"
+                        [(page)]="index"
+                        [pageSize]="1"
+                        [directionLinks]="count() > 5"
+                        [ellipses]="true"
+                    />
+                </div>
+            </div>
+        }
+    </div>
 </ng-template>

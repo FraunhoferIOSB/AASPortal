@@ -29,6 +29,7 @@ import { OidcClient } from './auth/oidc-client.js';
 import { IdentityProvider } from './auth/identity-provider.js';
 import { MongoDBCookieStore } from './cookie-storage/mongo-db-cookie-store.js';
 import { SqliteCookieStore } from './cookie-storage/sqlite-cookie-store.js';
+import { EndpointProvider } from './provider/endpoint-provider.js';
 
 container.registerSingleton(LOGGER, LoggerProxy);
 container.register(LOGGER_SCRIPT, { useFactory: c => path.join(c.resolve(Variable).CONTENT_ROOT, 'aas-log.js') });
@@ -91,3 +92,4 @@ container.register(USER_STORE, {
 container.registerSingleton(AAS_INDEX, AASIndexClient);
 
 container.resolve(WSNode);
+container.resolve(EndpointProvider);

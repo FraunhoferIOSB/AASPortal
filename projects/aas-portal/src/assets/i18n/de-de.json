@@ -22,7 +22,8 @@
         "INFO_NO_SHELLS_AVAILABLE": "Keine Verwaltungsschalen verfügbar."
     },
     "About": {
-        "ADD_TO_START_TOOLTIP": "Fügt eine Verknüpfung zur Startseite hinzu.",
+        "ADD_TO_START": "Favorit",
+        "ADD_TO_START_TOOLTIP": "Als Favorit zur Startseite hinzufügen.",
         "CAPTION": "Über",
         "NUMBER_OF_ENDPOINTS": "Endpunkte",
         "NUMBER_OF_SHELLS": "Verwaltungsschalen",
@@ -88,6 +89,8 @@
         "EMPTY": "Keine Verwalungsschale verfügbar."
     },
     "CarbonFootprint": {
+        "ADD_TO_START": "Favorit",
+        "ADD_TO_START_TOOLTIP": "Als Favorit zur Startseite hinzufügen.",
         "TITLE": "CO2-Fußabdruck",
         "CARBON_FOOTPRINT": "CO2-Fußabdruck",
         "CARBON_FOOTPRINTS": "CO2-Fußabdrücke",
@@ -108,6 +111,8 @@
         "YES": "Ja"
     },
     "ContactInformations": {
+        "ADD_TO_START": "Favorit",
+        "ADD_TO_START_TOOLTIP": "Als Favorit zur Startseite hinzufügen.",
         "TITLE": "Kontaktdaten"
     },
     "CustomerFeedback": {
@@ -150,10 +155,12 @@
         "TYPE": "Type"
     },
     "DocumentBrowser": {
-        "ADD_TO_START_TOOLTIP": "Fügt eine Verknüpfung zur Startseite hinzu.",
+        "ADD_TO_START": "Favorit",
+        "ADD_TO_START_TOOLTIP": "Als Favorit zur Startseite hinzufügen.",
         "CAPTION": "Browser"
     },
     "DocumentContent": {
+        "ADD_TO_START": "Favorit",
         "ADD_TO_START_TOOLTIP": "Als Favorit zur Startseite hinzufügen.",
         "CAPTION": "Struktur",
         "EMPTY": "Kein AAS-Document verfügbar.",
@@ -241,6 +248,11 @@
         "ERROR_INVALID_EMPTY_FAVORITES_LIST_NAME": "Ungültiger leerer Name.",
         "OK": "OK"
     },
+    "GenericSubmodel": {
+        "ADD_TO_START": "Favorit",
+        "ADD_TO_START_TOOLTIP": "Als Favorit zur Startseite hinzufügen.",
+        "SEARCH_PLACEHOLDER": "Nach Name filtern..."
+    },
     "HandoverDocumentation": {
         "TITLE": "Übergabedocumentation",
         "EMPTY": "Keine Übergabedokumente verfügbar."
@@ -293,6 +305,8 @@
         "VIEW": "Sicht"
     },
     "Nameplate": {
+        "ADD_TO_START": "Favorit",
+        "ADD_TO_START_TOOLTIP": "Als Favorit zur Startseite hinzufügen.",
         "GENERAL": "Allgemein",
         "TITLE": "Digitales Typenschild",
         "SERIAL_NUMBER": "Seriennummer",
@@ -309,6 +323,8 @@
         "CAPTION_WARNING": "Warnung"
     },
     "OperationalData": {
+        "ADD_TO_START": "Favorit",
+        "ADD_TO_START_TOOLTIP": "Als Favorit zur Startseite hinzufügen.",
         "TITLE": "Betriebsdaten"
     },
     "ProfileForm": {
@@ -367,6 +383,24 @@
     "ServiceRequestNotification": {
         "TITLE": "Serviceanfrage"
     },
+    "SensorMeasurementValue": {
+        "ADD_TO_START": "Favorit",
+        "ADD_TO_START_TOOLTIP": "Als Favorit zur Startseite hinzufügen.",
+        "TITLE": "Sensor-Messwert",
+        "VALUE": "Wert",
+        "TIMESTAMP": "Messzeitpunkt",
+        "PREDEFINED_VALUE": "Vordefinierter Wert",
+        "QUALITY": "Qualität",
+        "RANGE": "Bereich",
+        "SCALE": "Skalierung",
+        "TAG": "Kennzeichnung",
+        "ORIGIN": "Ursprung",
+        "VERSION": "Version",
+        "IDENTIFIER": "Bezeichner",
+        "LIVE": "Live-Wert",
+        "EXTENSIONS": "Zusätzliche Elemente",
+        "INVALID_TEMPLATE": "Das Messwert-Teilmodell entspricht nicht IDTA 02029-1 v1.0."
+    },
     "Settings": {
         "ADD_ENDPOINT": "Endpunkt hinzufügen...",
         "ENDPOINT_INDEX": "Endpunkt-Index...",
@@ -395,6 +429,7 @@
         "OperationalData": "Operative Daten",
         "PLACEHOLDER_FILTER": "Filter",
         "ServiceRequestNotification": "Serviceanfrage",
+        "SensorMeasurementValue": "Sensor-Messwert",
         "TechnicalData": "Technische Daten",
         "UPLOAD": "Hochladen",
         "UPLOAD_TOOLTIP": "AASX-Package-Datei zu einem AAS-Endpunkt hochladen.",
@@ -408,6 +443,9 @@
         "REMOVE_TOOLTIP": "Ausgewählte Kacheln löschen.",
         "MOVE_LEFT_TOOLTIP": "Ausgewählte Kacheln eine Position nach links schieben.",
         "MOVE_RIGHT_TOOLTIP": "Ausgewählte Kacheln eine Position nach rechts schieben."
+    },
+    "SubmodelTree": {
+        "SEARCH_PLACEHOLDER": "Nach Name filtern..."
     },
     "TechnicalData": {
         "TITLE": "Technische Daten"

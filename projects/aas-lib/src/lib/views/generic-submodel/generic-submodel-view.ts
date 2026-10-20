@@ -6,17 +6,19 @@
  *
  *****************************************************************************/
 
-import { RouterLink } from '@angular/router';
-import { TranslateDirective } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { EMPTY, Observable } from 'rxjs';
 import { Component, computed, effect, inject, OnDestroy, TemplateRef, viewChild } from '@angular/core';
 
-import { getDisplayName } from '../../utilities';
+import { encodeBase64Url, getDisplayName } from '../../utilities';
 import { ToolbarService } from '../../shared/services/toolbar.service';
 import { DocumentHeader } from '../../shared/components/document-header/document-header';
 import { SubmodelTree } from '../../shared/components/submodel-tree/submodel-tree';
 import { LeafView } from '../leaf-view';
 import { VIEW_ROUTE_NAME } from '../view-route-name';
+import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
+import { FormsModule } from '@angular/forms';
+import { StartService } from '../../shared/services/start.service';
 
 /**
  * Generic, read-only view of a single submodel — same searchable/collapsible tree (via
@@ -28,11 +30,12 @@ import { VIEW_ROUTE_NAME } from '../view-route-name';
     selector: 'fhg-generic-submodel-view',
     templateUrl: './generic-submodel-view.html',
     styleUrl: './generic-submodel-view.scss',
-    providers: [{ provide: VIEW_ROUTE_NAME, useValue: 'GenericSubmodel' }],
-    imports: [DocumentHeader, TranslateDirective, RouterLink, SubmodelTree],
+    providers: [{ provide: VIEW_ROUTE_NAME, useValue: 'generic-submodel' }],
+    imports: [DocumentHeader, FormsModule, TranslateDirective, TranslatePipe, SubmodelTree, NgbTooltip],
 })
 export class GenericSubmodelView extends LeafView implements OnDestroy {
     private readonly toolbar = inject(ToolbarService);
+    private readonly start = inject(StartService);
 
     public constructor() {
         super();
@@ -58,6 +61,19 @@ export class GenericSubmodelView extends LeafView implements OnDestroy {
     }
 
     public addToStart(): Observable<void> {
+        const document = this.document();
+        if (
+            document &&
+            this.start.add('Favorite', `GSM#${document.endpoint}#${document.id}`, {
+                endpoint: document.endpoint,
+                id: document.id,
+                caption: 'DocumentContent.CAPTION',
+                href: `views/generic-submodel;endpoint=${encodeBase64Url(document.endpoint)};id=${encodeBase64Url(document.id)}`,
+            })
+        ) {
+            return this.start.save();
+        }
+
         return EMPTY;
     }
 }

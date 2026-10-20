@@ -6,8 +6,8 @@
  *
  *****************************************************************************/
 
-import { TranslateDirective } from '@ngx-translate/core';
-import { NgbAccordionModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { NgbAccordionModule, NgbPaginationModule, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, of } from 'rxjs';
 import { Component, effect, inject, OnDestroy, TemplateRef, viewChild } from '@angular/core';
 
@@ -31,11 +31,13 @@ import { RouterModule } from '@angular/router';
     providers: [{ provide: VIEW_ROUTE_NAME, useValue: 'ContactInformation' }],
     imports: [
         TranslateDirective,
+        TranslatePipe,
         NgbPaginationModule,
         NgbAccordionModule,
         DocumentHeader,
         ContactInformation,
         RouterModule,
+        NgbTooltip,
     ],
 })
 export class ContactInformationView extends LeafView implements OnDestroy {

@@ -39,6 +39,7 @@ The repository uses TypeScript, ESM, npm workspaces, and Node.js 24. Keep ESM im
 - Prefer the built-in template control flow (`@if`, `@for`, and `@switch`) in new or substantially revised templates. For repeated lists, provide a stable `track` expression.
 - Use `input`, `output`, and `model` APIs for new component contracts where they fit the existing public API. Preserve existing decorator-based public APIs unless migration is part of the change.
 - Test through public component behavior, templates, and services. Use Angular's `TestBed`, Vitest, and `provideZonelessChangeDetection()` consistently with neighboring tests.
+- Use Bootstrap 5 and ng-bootstrap for creating the HTML design.
 
 ## Commands
 
