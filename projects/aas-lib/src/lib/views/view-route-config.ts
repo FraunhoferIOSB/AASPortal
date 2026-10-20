@@ -127,7 +127,7 @@ export const viewRoutes: ViewRoute[] = [
         },
     },
     {
-        path: 'OperationalData',
+        path: 'operational-data',
         component: OperationalDataView,
         data: {
             type: 'Leaf',

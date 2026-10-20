@@ -323,6 +323,8 @@
         "CAPTION_WARNING": "Warnung"
     },
     "OperationalData": {
+        "ADD_TO_START": "Favorit",
+        "ADD_TO_START_TOOLTIP": "Als Favorit zur Startseite hinzufügen.",
         "TITLE": "Betriebsdaten"
     },
     "ProfileForm": {

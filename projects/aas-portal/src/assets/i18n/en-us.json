@@ -329,6 +329,8 @@
         "WARNING": "Warning"
     },
     "OperationalData": {
+        "ADD_TO_START": "Favorite",
+        "ADD_TO_START_TOOLTIP": "Add as a favorite to the start page.",
         "TITLE": "Operational Data"
     },
     "ProfileForm": {

@@ -129,7 +129,7 @@ export type ViewRouteName =
     | 'HandoverDocumentation'
     | 'HierarchicalStructure'
     | 'Nameplate'
-    | 'OperationalData'
+    | 'operational-data'
     | 'Laser'
     | 'ServiceRequestNotification'
     | 'sensor-measurement-value'
