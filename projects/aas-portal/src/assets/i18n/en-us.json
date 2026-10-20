@@ -25,7 +25,8 @@
         "INFO_NO_SHELLS_AVAILABLE": "No Asset Administration Shells available."
     },
     "About": {
-        "ADD_TO_START_TOOLTIP": "Add a short-cut to the start page.",
+        "ADD_TO_START": "Favorite",
+        "ADD_TO_START_TOOLTIP": "Add as a favorite to the start page.",
         "CAPTION": "About",
         "NUMBER_OF_ENDPOINTS": "Endpoints",
         "NUMBER_OF_SHELLS": "Shells",
@@ -91,6 +92,8 @@
         "TITLE": "AAS browser"
     },
     "CarbonFootprint": {
+        "ADD_TO_START": "Favorite",
+        "ADD_TO_START_TOOLTIP": "Add as a favorite to the start page.",
         "TITLE": "Carbon Footprint",
         "CARBON_FOOTPRINT_DATA": "Carbon footprint",
         "CARBON_FOOTPRINT": "Carbon footprints",
@@ -111,6 +114,8 @@
         "YES": "Yes"
     },
     "ContactInformation": {
+        "ADD_TO_START": "Favorite",
+        "ADD_TO_START_TOOLTIP": "Add as a favorite to the start page.",
         "TITLE": "Contact Information"
     },
     "CustomerFeedback": {
@@ -153,6 +158,7 @@
         "TYPE": "Type"
     },
     "DocumentContent": {
+        "ADD_TO_START": "Favorite",
         "ADD_TO_START_TOOLTIP": "Add as a favorite to the start page.",
         "CAPTION": "Structure",
         "EMPTY": "No AAS document available.",
@@ -250,7 +256,8 @@
     },
     "GenericSubmodel": {
         "ADD_TO_START": "Favorite",
-        "ADD_TO_START_TOOLTIP": "Add as a favorite to the start page."
+        "ADD_TO_START_TOOLTIP": "Add as a favorite to the start page.",
+        "SEARCH_PLACEHOLDER": "Filter by name..."
     },
     "HandoverDocumentation": {
         "TITLE": "Handover Documentation",

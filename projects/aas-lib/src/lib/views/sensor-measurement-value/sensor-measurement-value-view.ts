@@ -59,7 +59,7 @@ export class SensorMeasurementValueView extends LeafView {
             this.start.add('Favorite', `SMV#${document.endpoint}#${document.id}`, {
                 endpoint: document.endpoint,
                 id: document.id,
-                caption: 'DocumentContent.CAPTION',
+                caption: 'SensorMeasurementValue.TITLE',
                 href: `views/sensor-measurement-value;endpoint=${encodeBase64Url(document.endpoint)};id=${encodeBase64Url(document.id)}`,
             })
         ) {

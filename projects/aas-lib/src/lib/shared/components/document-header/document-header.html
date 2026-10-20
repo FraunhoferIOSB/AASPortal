@@ -24,9 +24,9 @@
             <label class="text-body-tertiary" translate="DocumentHeader.VERSION"></label>
             <div class="ms-3">{{ version() }}</div>
             <label class="text-body-tertiary" translate="DocumentHeader.AAS_ID"></label>
-            <div class="ms-3">{{ id() }}</div>
+            <div class="ms-3 text-nowrap text-truncate">{{ id() }}</div>
             <label class="text-body-tertiary" translate="DocumentHeader.ASSET_ID"></label>
-            <div class="ms-3">{{ assetId() }}</div>
+            <div class="ms-3 text-nowrap text-truncate">{{ assetId() }}</div>
         </div>
         <div class="d-none d-lg-block">
             <canvas class="qrCode" #qrCode></canvas>

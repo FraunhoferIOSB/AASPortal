@@ -22,7 +22,8 @@
         "INFO_NO_SHELLS_AVAILABLE": "Keine Verwaltungsschalen verfügbar."
     },
     "About": {
-        "ADD_TO_START_TOOLTIP": "Fügt eine Verknüpfung zur Startseite hinzu.",
+        "ADD_TO_START": "Favorit",
+        "ADD_TO_START_TOOLTIP": "Als Favorit zur Startseite hinzufügen.",
         "CAPTION": "Über",
         "NUMBER_OF_ENDPOINTS": "Endpunkte",
         "NUMBER_OF_SHELLS": "Verwaltungsschalen",
@@ -88,6 +89,8 @@
         "EMPTY": "Keine Verwalungsschale verfügbar."
     },
     "CarbonFootprint": {
+        "ADD_TO_START": "Favorit",
+        "ADD_TO_START_TOOLTIP": "Als Favorit zur Startseite hinzufügen.",
         "TITLE": "CO2-Fußabdruck",
         "CARBON_FOOTPRINT": "CO2-Fußabdruck",
         "CARBON_FOOTPRINTS": "CO2-Fußabdrücke",
@@ -108,6 +111,8 @@
         "YES": "Ja"
     },
     "ContactInformations": {
+        "ADD_TO_START": "Favorit",
+        "ADD_TO_START_TOOLTIP": "Als Favorit zur Startseite hinzufügen.",
         "TITLE": "Kontaktdaten"
     },
     "CustomerFeedback": {
@@ -155,6 +160,7 @@
         "CAPTION": "Browser"
     },
     "DocumentContent": {
+        "ADD_TO_START": "Favorit",
         "ADD_TO_START_TOOLTIP": "Als Favorit zur Startseite hinzufügen.",
         "CAPTION": "Struktur",
         "EMPTY": "Kein AAS-Document verfügbar.",
@@ -244,7 +250,8 @@
     },
     "GenericSubmodel": {
         "ADD_TO_START": "Favorit",
-        "ADD_TO_START_TOOLTIP": "Als Favorit zur Startseite hinzufügen."
+        "ADD_TO_START_TOOLTIP": "Als Favorit zur Startseite hinzufügen.",
+        "SEARCH_PLACEHOLDER": "Nach Name filtern..."
     },
     "HandoverDocumentation": {
         "TITLE": "Übergabedocumentation",

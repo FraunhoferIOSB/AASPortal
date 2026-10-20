@@ -224,6 +224,9 @@ export class XmlReaderV3 extends AASReader {
             case 'Blob':
                 submodelElement = this.readBlob(node, path);
                 break;
+            case 'Capability':
+                submodelElement = this.readCapability(node, path);
+                break;
             case 'Entity':
                 submodelElement = this.readEntity(node, path);
                 break;
@@ -442,6 +445,11 @@ export class XmlReaderV3 extends AASReader {
         }
 
         return blob;
+    }
+
+    private readCapability(node: Element, path?: aas.ReferablePath): aas.Capability {
+        const capability: aas.Capability = this.readSubmodelElementType(node, path);
+        return capability;
     }
 
     private readSubmodelElementCollection(node: Element, path?: aas.ReferablePath): aas.SubmodelElementCollection {
@@ -906,7 +914,7 @@ export class XmlReaderV3 extends AASReader {
 
         const valueReferencePairs: aas.ValueReferencePair[] = [];
         for (const child of this.selectNodes('./aas:valueReferencePair', node)) {
-            valueReferencePairs.push(this.readReferenceValuePairs(child));
+            valueReferencePairs.push(this.readReferenceValuePair(child));
         }
 
         const value: aas.ValueList = {
@@ -916,7 +924,7 @@ export class XmlReaderV3 extends AASReader {
         return value;
     }
 
-    private readReferenceValuePairs(node: Element): aas.ValueReferencePair {
+    private readReferenceValuePair(node: Element): aas.ValueReferencePair {
         const value = this.readTextContent('./aas:value', node);
         if (!value) {
             throw new Error('ValueReferencePair.value');
@@ -1148,7 +1156,7 @@ export class XmlReaderV3 extends AASReader {
 
     private readTextContent(expression: string, node: Element): string | undefined {
         const value = (this.select(expression, node, true) as Node)?.textContent;
-        if (value == null) {
+        if (value === null) {
             return undefined;
         }
 
@@ -1167,7 +1175,7 @@ export class XmlReaderV3 extends AASReader {
     private readKey(node: Element): aas.Key | undefined {
         const type = this.getTextContent('./aas:type', node) as aas.KeyTypes;
         const value = this.getTextContent('./aas:value', node);
-        if (!type || !value) {
+        if (!type) {
             return undefined;
         }
 

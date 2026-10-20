@@ -51,7 +51,7 @@ export class DocumentBrowserView extends CompositeView implements OnDestroy {
     /**
      * A `TemplateRef` for the browser toolbar. It is used to set the toolbar content.
      */
-    public readonly toolbarTemplate = viewChild<TemplateRef<unknown>>('browserToolbar');
+    public readonly toolbarTemplate = viewChild<TemplateRef<unknown>>('toolbar');
 
     /**
      * The `BrowserState` instance used by the `BrowserComponent` to manage the browsing state.
