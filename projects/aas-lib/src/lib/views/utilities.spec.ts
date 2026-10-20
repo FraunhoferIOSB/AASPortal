@@ -87,7 +87,7 @@ describe('utilities', () => {
                 },
             };
 
-            expect(findRouteForSubmodel(viewRoutes, submodel)?.path).toEqual('OperationalData');
+            expect(findRouteForSubmodel(viewRoutes, submodel)?.path).toEqual('operational-data');
         });
     });
 

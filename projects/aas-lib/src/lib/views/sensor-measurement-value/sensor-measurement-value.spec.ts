@@ -13,12 +13,12 @@ import { provideTranslateService, TranslateLoader } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { aas, AASDocument, WebSocketData } from 'aas-core';
 
-import { WebSocketService } from '../../services/web-socket.service';
 import { FakeLoader } from '../../../test/mocks';
 import { SensorMeasurementValue } from './sensor-measurement-value';
 import { validateSensorMeasurementValue } from './sensor-measurement-value-validator';
 
 import measurementValue from '../../../test/assets/sensor-measurement-value-1-0.json';
+import { WebSocketService } from '../../shared/services/web-socket.service';
 
 describe('SensorMeasurementValue', () => {
     let component: SensorMeasurementValue;
@@ -33,14 +33,12 @@ describe('SensorMeasurementValue', () => {
         messages = new Subject<WebSocketData>();
         webSocket = { getMessages: (): Subject<WebSocketData> => messages, sendMessage: vi.fn() };
         environment = measurementValue as aas.Environment;
-        submodel = environment.submodels[0];
+        submodel = environment.submodels![0];
         document = {
             address: '',
-            crc32: 0,
             endpoint: 'Test',
             id: 'https://example.com/aas/sensor',
             idShort: 'SensorAAS',
-            readonly: false,
             timestamp: 0,
             content: environment,
         };

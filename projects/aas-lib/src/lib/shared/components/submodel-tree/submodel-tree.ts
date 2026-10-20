@@ -116,6 +116,7 @@ export class SubmodelTree implements OnDestroy {
                 groups.length <= SubmodelTree.autoExpandThreshold
                     ? groups.map(g => g.path)
                     : groups.filter(g => g.level === 0).map(g => g.path);
+
             this.expanded.set(new Set(paths));
         });
     }
@@ -177,6 +178,7 @@ export class SubmodelTree implements OnDestroy {
 
     public fileName(fileName: string | undefined): string | undefined {
         if (!fileName) return undefined;
+        
         // Some backends store File.value as a base64url-encoded reference joined with '-'
         // rather than a conventional '/'-separated path (base64url never contains '/', so
         // splitting on '/' alone left the whole encoded string untouched) — split on both.
