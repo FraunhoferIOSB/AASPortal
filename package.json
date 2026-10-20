@@ -101,7 +101,7 @@
     },
     "devDependencies": {
         "@angular/build": "^21.2.3",
-        "@angular/cli": "^21.2.3",
+        "@angular/cli": "^22.2.3",
         "@angular/compiler-cli": "^21.2.5",
         "@eslint/js": "^9.39.2",
         "@types/bootstrap": "^5.2.10",
@@ -123,7 +123,7 @@
         "@types/swagger-ui-express": "^4.1.8",
         "@types/ws": "^8.18.1",
         "@vitest/coverage-v8": "^4.1.0",
-        "angular-eslint": "21.3.1",
+        "angular-eslint": "22.6.0",
         "esbuild": "^0.27.4",
         "eslint": "^9.39.2",
         "eslint-config-prettier": "^10.1.8",
