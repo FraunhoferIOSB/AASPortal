@@ -43,6 +43,7 @@ import {
     isSubmodelElementList,
     LiveNode,
     LiveRequest,
+    toDisplayValue,
     WebSocketData,
 } from 'aas-core';
 
@@ -172,6 +173,12 @@ export class SubmodelTree implements OnDestroy {
 
     public readonly rootGroup = computed(() => this.groups()[0]);
 
+    public readonly matchCount = computed(() => {
+        return this.searchText().length > 0
+            ? [...this.filtered().itemsByPath.values()].reduce((n, items) => n + items.length, 0)
+            : -1;
+    });
+
     public childGroups(path: string): SubmodelTreeGroup[] {
         return this.filtered().childrenByPath.get(path) ?? [];
     }
@@ -210,12 +217,6 @@ export class SubmodelTree implements OnDestroy {
     public itemsOf(path: string): SubmodelTreeItem[] {
         return this.filtered().itemsByPath.get(path) ?? [];
     }
-
-    public matchCount = computed(() => {
-        return this.searchText().length > 0
-            ? [...this.filtered().itemsByPath.values()].reduce((n, items) => n + items.length, 0)
-            : -1;
-    });
 
     public ngOnDestroy(): void {
         this.webSocketSubscription?.unsubscribe();
@@ -311,9 +312,14 @@ export class SubmodelTree implements OnDestroy {
             child: aas.SubmodelElement,
             type: SubmodelTreeItem['type'],
             value: string | undefined,
+            valueType?: aas.DataTypeDefXsd,
             url?: string,
             isProse?: boolean,
         ): SubmodelTreeItem => {
+            if (valueType) {
+                value = toDisplayValue(value, valueType, this.currentLang());
+            }
+
             const item: SubmodelTreeItem = {
                 idShort: child.idShort,
                 name: getDisplayName(child, env, currentLang),
@@ -339,7 +345,8 @@ export class SubmodelTree implements OnDestroy {
             }
 
             if (isProperty(child)) {
-                const item = push(child, 'text', child.value);
+                const item = push(child, 'text', child.value, child.valueType);
+
                 if (this.live() && child.nodeId) {
                     this.liveNodes.push({ nodeId: child.nodeId, valueType: child.valueType ?? 'undefined' });
                     this.map.set(child.nodeId, item);
@@ -350,19 +357,21 @@ export class SubmodelTree implements OnDestroy {
                     continue;
                 }
 
-                push(child, 'text', getLocaleValue(child.value, currentLang), undefined, true);
+                push(child, 'text', getLocaleValue(child.value, currentLang), undefined, undefined, true);
             } else if (isFile(child)) {
                 if (!child.value || !document) {
                     continue;
                 }
 
-                push(child, 'link', child.value, getUrl(document, child));
+                push(child, 'link', child.value, undefined, getUrl(document, child));
             } else if (isRange(child)) {
                 if (child.min === undefined && child.max === undefined) {
                     continue;
                 }
 
-                push(child, 'text', `${child.min ?? '?'} … ${child.max ?? '?'}`);
+                const min = toDisplayValue(child.min, child.valueType, this.currentLang());
+                const max = toDisplayValue(child.max, child.valueType, this.currentLang());
+                push(child, 'text', `${min} … ${max}`);
             } else if (isReferenceElement(child)) {
                 push(child, 'text', child.value ? referenceToString(child.value) : undefined);
             } else if (isAnnotatedRelationshipElement(child) || isRelationshipElement(child)) {

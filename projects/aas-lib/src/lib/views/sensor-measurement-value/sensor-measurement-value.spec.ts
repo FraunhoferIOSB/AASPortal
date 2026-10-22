@@ -65,11 +65,12 @@ describe('SensorMeasurementValue', () => {
             value: '23.5',
             unit: '°C',
             kind: 'Temperature',
-            timestamp: '2025-12-11T10:15:00Z',
+            timestamp: '12/11/2025, 11:15:00 AM',
             range: '0 – 100',
             quality: 'good',
             identifier: '0173-1#02-BAF016#001',
         });
+
         expect(component.data()?.extensions.map(item => item.idShort)).toEqual(['VendorExtension']);
     });
 
@@ -96,10 +97,11 @@ describe('SensorMeasurementValue', () => {
                 }
             },
         ];
+
         for (const mutate of cases) {
             const invalidSubmodel = structuredClone(submodel) as aas.Submodel;
             mutate(invalidSubmodel);
-            expect(validateSensorMeasurementValue(invalidSubmodel).valid).toBe(false);
+            expect(validateSensorMeasurementValue(invalidSubmodel, 'en-us').valid).toBe(false);
         }
     });
 
@@ -108,11 +110,13 @@ describe('SensorMeasurementValue', () => {
         optionalSubmodel.submodelElements = optionalSubmodel.submodelElements?.filter(
             item => !['MeasuredValuePreDefined', 'Concept'].includes(item.idShort),
         );
+
         const qualifier = optionalSubmodel.submodelElements?.find(
             item => item.idShort === 'MeasurementQualifier',
         ) as aas.SubmodelElementCollection;
+
         qualifier.value = qualifier.value?.filter(item => !['Range', 'Scale', 'Tag'].includes(item.idShort));
-        expect(validateSensorMeasurementValue(optionalSubmodel).valid).toBe(true);
+        expect(validateSensorMeasurementValue(optionalSubmodel, 'en-us').valid).toBe(true);
     });
 
     it('rejects an optional collection when its required child is missing', () => {
@@ -121,7 +125,7 @@ describe('SensorMeasurementValue', () => {
             item => item.idShort === 'MeasuredValuePreDefined',
         ) as aas.SubmodelElementCollection;
         predefined.value = [];
-        expect(validateSensorMeasurementValue(invalidSubmodel).valid).toBe(false);
+        expect(validateSensorMeasurementValue(invalidSubmodel, 'en-us').valid).toBe(false);
     });
 
     it('requests and applies live updates for MeasuredValue.Value', () => {
@@ -146,6 +150,7 @@ describe('SensorMeasurementValue', () => {
         const noLiveSubmodel = structuredClone(submodel) as aas.Submodel;
         const measuredValue = noLiveSubmodel.submodelElements?.find(item => item.idShort === 'MeasuredValue') as
             aas.SubmodelElementCollection | undefined;
+
         measuredValue?.value?.forEach(item => {
             if (item.idShort === 'Value') {
                 delete (item as aas.Property).nodeId;

@@ -9,7 +9,7 @@
 import { Component, computed, effect, inject, input, OnDestroy, signal } from '@angular/core';
 import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
-import { aas, AASDocument, convertToString, LiveNode, LiveRequest, WebSocketData } from 'aas-core';
+import { aas, AASDocument, convertToString, LiveNode, LiveRequest, toDisplayValue, WebSocketData } from 'aas-core';
 
 import { MeasurementValueData, validateSensorMeasurementValue } from './sensor-measurement-value-validator';
 import { WebSocketService } from '../../shared/services/web-socket.service';
@@ -23,13 +23,17 @@ import { WebSocketService } from '../../shared/services/web-socket.service';
 export class SensorMeasurementValue implements OnDestroy {
     private readonly webSocket = inject(WebSocketService);
     private readonly translate = inject(TranslateService);
-    private webSocketSubscription?: Subscription;
     private readonly liveValue = signal<string | undefined>(undefined);
     private readonly liveTimestamp = signal<string | undefined>(undefined);
+    private readonly currentLang = computed(() => this.translate.currentLang() ?? 'en-us');
+    private webSocketSubscription?: Subscription;
 
     public readonly document = input<AASDocument>();
+
     public readonly submodel = input<aas.Submodel>();
-    public readonly validation = computed(() => validateSensorMeasurementValue(this.submodel()));
+
+    public readonly validation = computed(() => validateSensorMeasurementValue(this.submodel(), this.currentLang()));
+
     public readonly data = computed<MeasurementValueData | undefined>(() => {
         const validation = this.validation();
         if (!validation.valid) {
@@ -38,14 +42,18 @@ export class SensorMeasurementValue implements OnDestroy {
 
         return {
             ...validation.data,
-            value: this.liveValue() ?? validation.data.value,
             timestamp: this.liveTimestamp() ?? validation.data.timestamp,
+            value:
+                this.liveValue() ??
+                toDisplayValue(validation.data.value, validation.data.valueProperty.valueType, this.currentLang()),
         };
     });
+
     public readonly errors = computed(() => {
         const validation = this.validation();
         return validation.valid ? [] : validation.errors;
     });
+
     public readonly isLive = computed(() => Boolean(this.data()?.valueProperty.nodeId));
 
     public constructor() {
@@ -62,7 +70,7 @@ export class SensorMeasurementValue implements OnDestroy {
                     return;
                 }
 
-                this.webSocketSubscription = this.webSocket.getMessages().subscribe({ next: this.onMessage });
+                this.webSocketSubscription = this.webSocket.getMessages().subscribe(this.onMessage);
                 this.webSocket.sendMessage({
                     type: 'LiveRequest',
                     data: {
@@ -87,16 +95,18 @@ export class SensorMeasurementValue implements OnDestroy {
         const nodeId = this.data()?.valueProperty.nodeId;
         const liveNode = (message.data as LiveNode[]).find(item => item.nodeId === nodeId);
         if (liveNode) {
-            const locale = this.translate.currentLang() ?? 'en-us';
-            this.liveValue.set(convertToString(liveNode.value, locale));
+            const currentLang = this.currentLang();
+            this.liveValue.set(convertToString(liveNode.value, currentLang));
             if (liveNode.timeStamp !== undefined) {
-                this.liveTimestamp.set(convertToString(new Date(liveNode.timeStamp), locale));
+                this.liveTimestamp.set(convertToString(new Date(liveNode.timeStamp), currentLang));
             }
         }
     };
 
     private stop(): void {
-        this.webSocketSubscription?.unsubscribe();
-        this.webSocketSubscription = undefined;
+        if (this.webSocketSubscription) {
+            this.webSocketSubscription.unsubscribe();
+            this.webSocketSubscription = undefined;
+        }
     }
 }

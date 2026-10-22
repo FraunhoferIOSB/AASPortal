@@ -7,12 +7,20 @@
  !---------------------------------------------------------------------------->
 
 <div class="h-100 w-100 overflow-y-auto overflow-x-hidden px-3">
-    <fhg-aas-table
-        [documents]="documents()"
-        [selected]="selected()"
-        (selectedChange)="setSelected($event)"
-        [expression]="filter()"
-    ></fhg-aas-table>
+    @if (!isLoading()) {
+        <fhg-aas-table
+            [documents]="documents()"
+            [selected]="selected()"
+            (selectedChange)="setSelected($event)"
+            [expression]="filter()"
+        ></fhg-aas-table>
+    } @else {
+        <div class="d-flex align-items-center justify-content-center h-100 w-100">
+            <div class="spinner-border text-info" role="status" style="width: 3rem; height: 3rem">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    }
 
     <div class="w-100 d-block d-md-none">
         @if (!activeFavoritesList()) {
@@ -96,11 +104,7 @@
                 class="d-flex flex-row align-items-center px-3 bg-secondary-subtle my-1 border border-black border-opacity-25 rounded-3"
             >
                 <div class="d-flex flex-row align-items-center text-white">
-                    <button
-                        type="button"
-                        class="btn text-primary"
-                        (click)="emptySelected()"
-                    >
+                    <button type="button" class="btn text-primary" (click)="emptySelected()">
                         <i class="bi bi-x fs-3"></i>
                     </button>
                     <span>{{ selected().length }} selected</span>

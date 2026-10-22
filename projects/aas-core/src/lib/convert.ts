@@ -229,15 +229,16 @@ export function changeType(value: unknown, type: DataTypeDefXsd, localId?: strin
  * Converts a value to an equivalent string expression.
  * @param value The current value.
  * @param localeId The locale identifier.
+ * @param unit The unit to append t
  * @returns A string expression that represents the specified value.
  */
-export function convertToString(value: unknown, localeId?: string): string {
+export function convertToString(value: unknown, localeId?: string, unit?: string): string {
     if (value === undefined || value === null) {
         return '';
     }
 
     if (typeof value === 'string') {
-        return value;
+        return unit ? `${value} ${unit}` : value;
     }
 
     if (typeof value === 'boolean') {
@@ -245,7 +246,8 @@ export function convertToString(value: unknown, localeId?: string): string {
     }
 
     if (typeof value === 'number') {
-        return localeId ? value.toLocaleString(localeId) : value.toString();
+        const s = localeId ? value.toLocaleString(localeId) : value.toString();
+        return unit ? `${s} ${unit}` : s;
     }
 
     if (value instanceof Date) {
@@ -253,7 +255,8 @@ export function convertToString(value: unknown, localeId?: string): string {
     }
 
     if (typeof value === 'bigint') {
-        return localeId ? value.toLocaleString(localeId) : value.toString();
+        const s = localeId ? value.toLocaleString(localeId) : value.toString();
+        return unit ? `${s} ${unit}` : s;
     }
 
     if (Array.isArray(value)) {

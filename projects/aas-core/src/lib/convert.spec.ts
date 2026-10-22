@@ -77,8 +77,16 @@ describe('Convert', () => {
             expect(convertToString(42)).toEqual('42');
         });
 
+        it('converts 42 mm to "42 mm"', () => {
+            expect(convertToString(42, undefined, 'mm')).toEqual('42 mm');
+        });
+
         it('converts 42n to "42"', () => {
             expect(convertToString(42n)).toEqual('42');
+        });
+
+        it('converts 42n s to "42 s"', () => {
+            expect(convertToString(42n, undefined, 's')).toEqual('42 s');
         });
 
         it('converts 42.123 to "42,123" (de-de)', () => {

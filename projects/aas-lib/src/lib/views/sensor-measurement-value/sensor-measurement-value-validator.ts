@@ -6,7 +6,15 @@
  *
  *****************************************************************************/
 
-import { aas, getChildren, getSemanticId, isProperty, isRange, isSubmodelElementCollection } from 'aas-core';
+import {
+    aas,
+    getChildren,
+    getSemanticId,
+    isProperty,
+    isRange,
+    isSubmodelElementCollection,
+    toDisplayValue,
+} from 'aas-core';
 
 import { SENSOR_MEASUREMENT_VALUE_1_0 } from '../views-constants';
 
@@ -154,7 +162,10 @@ export type MeasurementValueValidation =
     { valid: true; data: MeasurementValueData } | { valid: false; errors: string[] };
 
 /** Validates and normalizes an IDTA 02029-1 Measurement Value submodel. */
-export function validateSensorMeasurementValue(submodel: aas.Submodel | undefined): MeasurementValueValidation {
+export function validateSensorMeasurementValue(
+    submodel: aas.Submodel | undefined,
+    lang: string,
+): MeasurementValueValidation {
     const errors: string[] = [];
     if (!submodel) {
         return { valid: false, errors: ['Submodel is missing.'] };
@@ -195,15 +206,16 @@ export function validateSensorMeasurementValue(submodel: aas.Submodel | undefine
 
     const valueProperty = elements.get('MeasuredValue.Value') as aas.Property;
     const range = elements.get('MeasurementQualifier.Range');
+    const unit = propertyValue(elements, 'MeasuredValue.Unit'); 
     return {
         valid: true,
         data: {
             value: valueProperty.value,
             valueProperty,
-            unit: propertyValue(elements, 'MeasuredValue.Unit'),
+            unit,
             kind: propertyValue(elements, 'MeasuredValue.Kind'),
-            timestamp: propertyValue(elements, 'MeasurementTimestamp'),
-            predefinedValue: propertyValue(elements, 'MeasuredValuePreDefined.Distance'),
+            timestamp: propertyValue(elements, 'MeasurementTimestamp', lang),
+            predefinedValue: propertyValue(elements, 'MeasuredValuePreDefined.Distance', lang, unit),
             quality: propertyValue(elements, 'MeasurementQualifier.Quality'),
             range: isRange(range)
                 ? [range.min, range.max].filter(value => value !== undefined).join(' – ') || undefined
@@ -244,9 +256,18 @@ function hasOptionalParent(path: string, elements: Map<string, aas.Referable>): 
     return Boolean(parent && elements.has(parent));
 }
 
-function propertyValue(elements: Map<string, aas.Referable>, path: string): string | undefined {
+function propertyValue(
+    elements: Map<string, aas.Referable>,
+    path: string,
+    lang?: string,
+    unit?: string,
+): string | undefined {
     const element = elements.get(path);
-    return isProperty(element) ? element.value : undefined;
+    if (!isProperty(element)) {
+        return undefined;
+    }
+
+    return toDisplayValue(element.value, element.valueType, lang, unit);
 }
 
 function getExtensions(submodel: aas.Submodel): aas.Referable[] {

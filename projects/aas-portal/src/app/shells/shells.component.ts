@@ -221,6 +221,8 @@ export class ShellsComponent implements OnDestroy {
      */
     public readonly someEndpointsChecked = this.state.someEndpointsChecked;
 
+    public readonly isLoading = this.state.isLoading;
+
     public ngOnDestroy(): void {
         this.toolbar.clear();
         this.state.save().subscribe();

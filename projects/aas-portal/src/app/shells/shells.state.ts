@@ -65,31 +65,28 @@ export class ShellsState {
     private readonly subject = new Subject<AASDocument[]>();
     private readonly debouncedFilter = debounced(() => this.filterText(), 500);
 
-    private readonly resource = httpResource<AASPagedResult>(
-        () => {
-            const filter = this.debouncedFilter.value();
-            const endpoints = this.endpoints();
-            const cursor: AASCursor = {
-                limit: this.limit(),
-                next: this.position().next,
-                previous: this.position().previous,
-            };
+    private readonly resource = httpResource<AASPagedResult>(() => {
+        const filter = this.debouncedFilter.value();
+        const endpoints = this.endpoints();
+        const cursor: AASCursor = {
+            limit: this.limit(),
+            next: this.position().next,
+            previous: this.position().previous,
+        };
 
-            let url = `/api/v1/documents?cursor=${encodeBase64Url(JSON.stringify(cursor))}`;
-            if (filter.length >= 3) {
-                url += `&filter=${encodeBase64Url(filter)}`;
-                url += `&language=${this.translate.getCurrentLang()}`;
-            }
+        let url = `/api/v1/documents?cursor=${encodeBase64Url(JSON.stringify(cursor))}`;
+        if (filter.length >= 3) {
+            url += `&filter=${encodeBase64Url(filter)}`;
+            url += `&language=${this.translate.getCurrentLang()}`;
+        }
 
-            const checkedEndpoints = endpoints.filter(endpoint => endpoint.checked).map(endpoint => endpoint.name);
-            if (checkedEndpoints.length > 0 && checkedEndpoints.length < endpoints.length) {
-                url += `&endpoint=${checkedEndpoints.map(encodeBase64Url).join('&endpoint=')}`;
-            }
+        const checkedEndpoints = endpoints.filter(endpoint => endpoint.checked).map(endpoint => endpoint.name);
+        if (checkedEndpoints.length > 0 && checkedEndpoints.length < endpoints.length) {
+            url += `&endpoint=${checkedEndpoints.map(encodeBase64Url).join('&endpoint=')}`;
+        }
 
-            return url;
-        },
-        { defaultValue: { previous: null, next: null, documents: [] } },
-    );
+        return url;
+    });
 
     public constructor() {
         effect(async () => {
@@ -185,6 +182,11 @@ export class ShellsState {
      * The list of currently selected documents.
      */
     public readonly selected = this.selected$.asReadonly();
+
+    /**
+     * Indicates whether the resource is currently loading.
+     */
+    public readonly isLoading = this.resource.isLoading;
 
     /**
      * Updates the current state with the provided new state values. Only the properties that are defined
