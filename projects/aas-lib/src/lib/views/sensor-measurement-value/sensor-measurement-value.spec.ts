@@ -59,12 +59,6 @@ describe('SensorMeasurementValue', () => {
         fixture.detectChanges();
     });
 
-    afterEach(() => {
-        vi.restoreAllMocks();
-        vi.clearAllMocks();
-        fixture.destroy();
-    });
-
     it('validates and renders the required measurement, optional metadata, and vendor extension', () => {
         expect(component.validation().valid).toBe(true);
         expect(component.data()).toMatchObject({
