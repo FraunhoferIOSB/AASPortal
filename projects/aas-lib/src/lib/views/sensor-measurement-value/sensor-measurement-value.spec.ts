@@ -6,7 +6,7 @@
  *
  *****************************************************************************/
 
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideTranslateService, TranslateLoader } from '@ngx-translate/core';
@@ -57,6 +57,12 @@ describe('SensorMeasurementValue', () => {
         fixture.componentRef.setInput('document', document);
         fixture.componentRef.setInput('submodel', submodel);
         fixture.detectChanges();
+    });
+
+    afterEach(() => {
+        vi.restoreAllMocks();
+        vi.clearAllMocks();
+        fixture.destroy();
     });
 
     it('validates and renders the required measurement, optional metadata, and vendor extension', () => {
