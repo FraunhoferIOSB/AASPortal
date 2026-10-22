@@ -206,7 +206,7 @@ export function validateSensorMeasurementValue(
 
     const valueProperty = elements.get('MeasuredValue.Value') as aas.Property;
     const range = elements.get('MeasurementQualifier.Range');
-    const unit = propertyValue(elements, 'MeasuredValue.Unit'); 
+    const unit = propertyValue(elements, 'MeasuredValue.Unit');
     return {
         valid: true,
         data: {
