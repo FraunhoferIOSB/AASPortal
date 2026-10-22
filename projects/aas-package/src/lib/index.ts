@@ -14,7 +14,7 @@ export * from './aasx-file.js';
 export * from './logging/logger-proxy.js';
 export * from './logging/logger-app.js';
 export * from './logging/logger.js';
-export * from './logging/logger-factory.js';
+export * from './logging/console-logger.js';
 export * from './mongo-db-connection-provider.js';
 export * from './reader/json-reader-v2.js';
 export * from './reader/json-reader-v3.js';
