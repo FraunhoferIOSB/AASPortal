@@ -33,3 +33,16 @@ await esbuild.build({
     minify: true,
     preserveSymlinks: false,
 });
+
+await esbuild.build({
+    entryPoints: ['./src/app/aas-rt.ts'],
+    outdir: './dist',
+    bundle: true,
+    platform: 'node',
+    format: 'esm',
+    target: 'es2024',
+    tsconfig: 'tsconfig.app.json',
+    packages: 'external',
+    minify: true,
+    preserveSymlinks: false,
+});

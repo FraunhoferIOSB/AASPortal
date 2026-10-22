@@ -57,7 +57,7 @@ describe('HttpSubscription', function () {
 
     it('open/close subscription', async () => {
         vi.useFakeTimers();
-        aasxServer.readValue.mockResolvedValue('42');
+        aasxServer.readValue.mockResolvedValue(42);
         subscription.open();
         subscription.close();
         vi.advanceTimersByTime(500);

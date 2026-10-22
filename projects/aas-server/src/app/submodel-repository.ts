@@ -6,7 +6,7 @@
  *
  *****************************************************************************/
 
-import { inject, singleton } from 'tsyringe';
+import { container, singleton } from 'tsyringe';
 import path from 'path';
 import { aas, ApplicationError, isFile, jsonization, PagedResult, types } from 'aas-core';
 import { FileResult } from 'aas-package';
@@ -20,13 +20,13 @@ import { DeleteAttachmentCommand } from './db/commands/delete-attachment-command
 import { processSerializationModifier, selectSubmodelElement, toValueSerialization } from './utilities.js';
 import { PatchSubmodelElementValueCommand } from './db/commands/patch-submodel-element-value-command.js';
 import { Variable } from './variable.js';
+import { Runtime } from './runtime.js';
 
 @singleton()
 export class SubmodelRepository {
-    public constructor(
-        @inject(Variable) private readonly variable: Variable,
-        @inject(Database) private readonly db: Database,
-    ) {}
+    private readonly variable = container.resolve(Variable);
+    private readonly db = container.resolve(Database);
+    private readonly runtime = container.resolve(Runtime);
 
     public async getSubmodels(
         limit: number | undefined,
@@ -129,6 +129,11 @@ export class SubmodelRepository {
         level: LevelModifier,
         extent: ExtentModifier,
     ): Promise<jsonization.JsonValue> {
+        const value = await this.runtime.getValue(id, idShortPath);
+        if (value !== undefined) {
+            return value;
+        }
+
         const element = await this.getSubmodelElement(id, idShortPath, level, extent);
         return toValueSerialization(element);
     }

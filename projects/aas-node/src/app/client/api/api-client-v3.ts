@@ -217,7 +217,7 @@ export class ApiClientV3 extends ApiClient {
         const index = nodeId.indexOf('#');
         const smId = nodeId.substring(0, index);
         const idShortPath = encodeIdShortPath(nodeId.substring(index + 1));
-        return this.resolve(`submodels/${smId}/submodel-elements/${idShortPath}`).href;
+        return this.resolve(`submodels/${smId}/submodel-elements/${idShortPath}/$value`).href;
     }
 
     public override async getPackage(aasId: string): Promise<NodeJS.ReadableStream> {

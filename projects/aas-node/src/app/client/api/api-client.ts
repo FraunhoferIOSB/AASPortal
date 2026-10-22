@@ -6,7 +6,7 @@
  *
  *****************************************************************************/
 
-import { aas, AASEndpoint, convertFromString, DefaultType, LiveRequest } from 'aas-core';
+import { aas, AASEndpoint, jsonization, LiveRequest } from 'aas-core';
 import { Logger } from 'aas-package';
 
 import { HttpClient } from '../../http-client.js';
@@ -16,10 +16,6 @@ import { EndpointClient } from '../endpoint-client.js';
 import { SocketSubscription } from '../../live/socket-subscription.js';
 import { AasxPackage } from '../fs/aasx-package.js';
 import { AASIndex } from '../../index/aas-index.js';
-
-interface PropertyValue {
-    value: string;
-}
 
 /**
  * Provides access to an AAS API endpoint.
@@ -85,12 +81,10 @@ export abstract class ApiClient extends EndpointClient {
     /**
      * Reads the current value from a submodel element.
      * @param url The path of the submodel element value.
-     * @param valueType The
      * @returns The current value.
      */
-    public async readValue(url: string, valueType: aas.DataTypeDefXsd): Promise<DefaultType | undefined> {
-        const property = await this.http.get<PropertyValue>(new URL(url), this.auth);
-        return convertFromString(property.value, valueType);
+    public async readValue(url: string): Promise<jsonization.JsonValue | undefined> {
+        return await this.http.get<jsonization.JsonValue>(new URL(url), this.auth);
     }
 
     /**

@@ -7,28 +7,36 @@
  *****************************************************************************/
 
 import 'reflect-metadata';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, Mocked } from 'vitest';
 import { resolve } from 'path';
 
 import { Variable } from './variable.js';
 import { SubmodelRepository } from './submodel-repository.js';
 import { createDatabase, createSpyObj } from '../test/mocks.js';
 import { fileURLToPath } from 'url';
+import { container } from 'tsyringe';
+import { Database } from './db/database.js';
+import { Runtime } from './runtime.js';
 
 describe('SubmodelRepository', () => {
-    let variable: Variable;
+    let variable: Mocked<Variable>;
+    let repository: SubmodelRepository;
 
-    beforeEach(() => {
+    beforeEach(async () => {
         variable = createSpyObj<Variable>(
             {},
             { DATA: resolve('./src/test/assets/tmp/data'), PAGE_SIZE: 100, CACHE_SIZE: 100 },
         );
+
+        container.clearInstances();
+        container.registerInstance(Variable, variable);
+        container.registerInstance(Runtime, createSpyObj<Runtime>({}));
+        container.registerInstance(Database, await createDatabase());
+        repository = container.resolve(SubmodelRepository);
     });
 
     describe('getSubmodels', () => {
         it('gets all submodels', async () => {
-            const db = await createDatabase();
-            const repository = new SubmodelRepository(variable, db);
             const result = await repository.getSubmodels(undefined, undefined, 'deep', 'withoutBlobValue');
             expect(result.result.length).toBe(4);
         });
@@ -36,8 +44,6 @@ describe('SubmodelRepository', () => {
 
     describe('getSubmodel', () => {
         it('gets a submodel', async () => {
-            const db = await createDatabase();
-            const repository = new SubmodelRepository(variable, db);
             const submodel = await repository.getSubmodel(
                 'http.//i40.customer.com/type/1/1/7A7104BDAB57E184',
                 'deep',
@@ -48,16 +54,12 @@ describe('SubmodelRepository', () => {
         });
 
         it('throws an Error (unknown Submodel)', async () => {
-            const db = await createDatabase();
-            const repository = new SubmodelRepository(variable, db);
             await expect(repository.getSubmodel('unknown', 'deep', 'withoutBlobValue')).rejects.toThrow();
         });
     });
 
     describe('getFileByPath', () => {
         it('download the file content', async () => {
-            const db = await createDatabase();
-            const repository = new SubmodelRepository(variable, db);
             const result = await repository.getFileByPath(
                 'http://i40.customer.com/type/1/1/1A7B62B529F19152',
                 'OperatingManual.DigitalFile_PDF',
@@ -67,16 +69,12 @@ describe('SubmodelRepository', () => {
         });
 
         it('throws an Error', async () => {
-            const db = await createDatabase();
-            const repository = new SubmodelRepository(variable, db);
             await expect(repository.getFileByPath('unknown', 'OperatingManual.DigitalFile_PDF')).rejects.toThrow();
         });
     });
 
     describe('putFileByPath', () => {
         it('updates a File content', async () => {
-            const db = await createDatabase();
-            const repository = new SubmodelRepository(variable, db);
             await expect(
                 repository.putFileByPath(
                     'http://i40.customer.com/type/1/1/1A7B62B529F19152',
@@ -88,8 +86,6 @@ describe('SubmodelRepository', () => {
         });
 
         it('throws an Error (unknown Submodel)', async () => {
-            const db = await createDatabase();
-            const repository = new SubmodelRepository(variable, db);
             await expect(
                 repository.putFileByPath(
                     'unknown',
@@ -101,8 +97,6 @@ describe('SubmodelRepository', () => {
         });
 
         it('throws an Error (unknown File)', async () => {
-            const db = await createDatabase();
-            const repository = new SubmodelRepository(variable, db);
             await expect(
                 repository.putFileByPath(
                     'http://i40.customer.com/type/1/1/1A7B62B529F19152',
@@ -116,8 +110,6 @@ describe('SubmodelRepository', () => {
 
     describe('deleteFileByPath', () => {
         it('deletes a File content', async () => {
-            const db = await createDatabase();
-            const repository = new SubmodelRepository(variable, db);
             await expect(
                 repository.deleteFileByPath(
                     'http://i40.customer.com/type/1/1/1A7B62B529F19152',
@@ -127,16 +119,12 @@ describe('SubmodelRepository', () => {
         });
 
         it('throws an Error', async () => {
-            const db = await createDatabase();
-            const repository = new SubmodelRepository(variable, db);
             await expect(repository.deleteFileByPath('unknown', 'OperatingManual.DigitalFile_PDF')).rejects.toThrow();
         });
     });
 
     describe('getSubmodelElement', () => {
         it('gets a Submodel Element', async () => {
-            const db = await createDatabase();
-            const repository = new SubmodelRepository(variable, db);
             const property = await repository.getSubmodelElement(
                 'http.//i40.customer.com/type/1/1/7A7104BDAB57E184',
                 'MaxRotationSpeed',
@@ -148,8 +136,6 @@ describe('SubmodelRepository', () => {
         });
 
         it('throws an Error (invalid idShortPath)', async () => {
-            const db = await createDatabase();
-            const repository = new SubmodelRepository(variable, db);
             await expect(
                 repository.getSubmodelElement(
                     'http.//i40.customer.com/type/1/1/7A7104BDAB57E184',
@@ -163,8 +149,6 @@ describe('SubmodelRepository', () => {
 
     describe('getSubmodelElementValue', () => {
         it('gets a Submodel Element value', async () => {
-            const db = await createDatabase();
-            const repository = new SubmodelRepository(variable, db);
             const value = await repository.getSubmodelElementValue(
                 'http.//i40.customer.com/type/1/1/7A7104BDAB57E184',
                 'MaxRotationSpeed',
@@ -176,8 +160,6 @@ describe('SubmodelRepository', () => {
         });
 
         it('throws an error if idShortPath is invalid', async () => {
-            const db = await createDatabase();
-            const repository = new SubmodelRepository(variable, db);
             await expect(
                 repository.getSubmodelElementValue(
                     'http.//i40.customer.com/type/1/1/7A7104BDAB57E184',
@@ -191,8 +173,6 @@ describe('SubmodelRepository', () => {
 
     describe('patchSubmodelElementValue', () => {
         it('updates a Submodel Element value', async () => {
-            const db = await createDatabase();
-            const repository = new SubmodelRepository(variable, db);
             await expect(
                 repository.patchSubmodelElementValue(
                     'http.//i40.customer.com/type/1/1/7A7104BDAB57E184',
@@ -203,8 +183,6 @@ describe('SubmodelRepository', () => {
         });
 
         it('throws an error if idShortPath is invalid', async () => {
-            const db = await createDatabase();
-            const repository = new SubmodelRepository(variable, db);
             await expect(
                 repository.patchSubmodelElementValue(
                     'http.//i40.customer.com/type/1/1/7A7104BDAB57E184',
@@ -215,8 +193,6 @@ describe('SubmodelRepository', () => {
         });
 
         it('throws an error if value is invalid', async () => {
-            const db = await createDatabase();
-            const repository = new SubmodelRepository(variable, db);
             await expect(
                 repository.patchSubmodelElementValue(
                     'http.//i40.customer.com/type/1/1/7A7104BDAB57E184',

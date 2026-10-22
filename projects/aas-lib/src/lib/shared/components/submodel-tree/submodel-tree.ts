@@ -218,7 +218,9 @@ export class SubmodelTree implements OnDestroy {
     });
 
     public ngOnDestroy(): void {
-        this.webSocketSubscription?.unsubscribe();
+        if (this.webSocketSubscription) {
+            this.stop();
+        }
     }
 
     public setQuery(value: string): void {
@@ -398,6 +400,10 @@ export class SubmodelTree implements OnDestroy {
     private play(): void {
         const document = this.document();
         if (!document) {
+            return;
+        }
+
+        if (this.webSocketSubscription) {
             return;
         }
 

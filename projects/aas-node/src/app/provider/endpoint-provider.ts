@@ -43,7 +43,7 @@ export class EndpointProvider implements Disposable {
     public constructor() {
         this.workerPool.on('message', this.workerPoolOnMessage);
         this.workerPool.on('end', this.workerPoolOnEnd);
-        this.wsServer.on('message', this.onClientMessage);
+        this.wsServer.on('message', this.onMessage);
 
         this.initializeIndex()
             .then(() => this.startScan())
@@ -240,7 +240,7 @@ export class EndpointProvider implements Disposable {
     public dispose(): void {
         this.workerPool.off('message', this.workerPoolOnMessage);
         this.workerPool.off('end', this.workerPoolOnEnd);
-        this.wsServer.off('message', this.onClientMessage);
+        this.wsServer.off('message', this.onMessage);
     }
 
     private async initializeIndex(): Promise<void> {
@@ -264,7 +264,7 @@ export class EndpointProvider implements Disposable {
         }
     }
 
-    private onClientMessage = async (data: WebSocketData, socket: SocketClient): Promise<void> => {
+    private onMessage = async (data: WebSocketData, socket: SocketClient): Promise<void> => {
         try {
             switch (data.type) {
                 case 'LiveRequest':
